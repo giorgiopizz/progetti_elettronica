@@ -1,4 +1,0 @@
-".\Objects\led.obj",
-".\Objects\configurazione_micro.obj" 
-TO ".\Objects\led" 
-PRINT(".\Listings\led.m51") RAMSIZE(256) 
