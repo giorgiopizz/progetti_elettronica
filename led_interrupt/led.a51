@@ -9,21 +9,23 @@ NAME Uso_del_led
 		JMP START
 
 
-
+;scopo di questo programma è eseguire delle istruzioni(jmp $) e gestire gli interrupt del timer. Dopo 1000 interrupt il programma accende o spegne il led
 CSEG AT 0x000B ;dove punta l'interrupt del timer 0
 	jmp TIMER
 
 
 RSEG PRINCIPALE
 
-
-
 TIMER:
+    CLR TR0
+    CLR TF0
 	DJNZ R0, NULLA
 	JMP SCELTA
 
 NULLA:
+    SETB TR0; faccio ripartire il micro
 	RETI
+	
 SCELTA:
 	;SE R1 è 1 ALLORA ACCENDO, SE è 0 SPENGO
 	MOV A, R1
@@ -32,19 +34,21 @@ SCELTA:
 
 ACCENSIONE:
 	SETB P1.6
-	MOV R0, #1000
+	MOV R0, #100
 	MOV R1,#1
+	SETB TR0; faccio ripartire il micro
 	RETI
-
 
 SPEGNIMENTO:
 	CLR P1.6
-	MOV R0, #1000
+	MOV R0, #100
 	MOV R1,#0
+	SETB TR0; faccio ripartire il micro
 	RETI
 
 START: LCALL Init_Device
-MOV R0, #1000
+
+MOV R0, #100
 MOV R1, #0
 
 jmp $

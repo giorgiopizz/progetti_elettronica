@@ -34,21 +34,21 @@ SCELTA:
 
 ACCENSIONE:
 	SETB P1.6
-	MOV R0, #1000
+	MOV R0, #100
 	MOV R1,#1
 	SETB TR0; faccio ripartire il micro
 	RETI
 
 SPEGNIMENTO:
 	CLR P1.6
-	MOV R0, #1000
+	MOV R0, #100
 	MOV R1,#0
 	SETB TR0; faccio ripartire il micro
 	RETI
 
 START: LCALL Init_Device
 
-MOV R0, #1000
+MOV R0, #100
 MOV R1, #0
 
 jmp $

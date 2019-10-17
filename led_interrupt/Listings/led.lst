@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     1
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   00A8          +1    55     IE       DATA  0A8H   ; INTERRUPT ENABLE
   00A9          +1    56     SADDR0   DATA  0A9H   ; SERIAL PORT 0 SLAVE ADDRESS
   00AA          +1    57     ADC1CN  DATA  0AAH   ; ADC 1 CONTROL
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     2
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     2
 
   00AB          +1    58     ADC1CF   DATA  0ABH   ; ADC 1 ANALOG MUX CONFIGURATION
   00AC          +1    59     AMX1SL   DATA  0ACH   ; ADC 1 ANALOG MUX CHANNEL SELECT
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00EE          +1   121     PCA0CPL4 DATA  0EEH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 4 - LOW BYTE
   00EF          +1   122     RSTSRC   DATA  0EFH   ; RESET SOURCE 
   00F0          +1   123     B        DATA  0F0H   ; B REGISTER
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     3
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     3
 
   00F1          +1   124     SCON1    DATA  0F1H   ; SERIAL PORT 1 CONTROL
   00F2          +1   125     SBUF1    DATA  0F2H   ; SERAIL PORT 1 DATA
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00C6          +1   187     ENSMB    BIT   SMB0CN.6 ; SMBUS 0 ENABLE 
                 +1   188     ;
                 +1   189     ; T2CON C8H
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     4
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     4
 
   00C8          +1   190     CPRL2    BIT   T2CON.0 ; CAPTURE OR RELOAD SELECT
   00C9          +1   191     CT2      BIT   T2CON.1 ; TIMER OR COUNTER SELECT
@@ -252,70 +252,63 @@ LOC  OBJ            LINE     SOURCE
   00FF          +1   236     SPIF     BIT   SPI0CN.7 ; SPI 0 INTERRUPT FLAG
                      237     
                      238             EXTRN CODE (Init_Device);recuperiamo questa funzione da configurazione_micro.asm
-                     239             
+                     239     
                      240             PRINCIPALE SEGMENT CODE
                      241     
-                     242             
-----                 243             CSEG AT 0 
-0000 020000   F      244                     JMP START 
-                     245             
-                     246     ; spegnere il watchdog 
-                     247     
-                     248     ;impostare la frequenza del clock esterno a 22.1184
-                     249     
-                     250     ;impostare porta del led
+                     242     
+----                 243             CSEG AT 0
+0000 020000   F      244                     JMP START
+                     245     
+                     246     
+                     247     ;scopo di questo programma è eseguire delle istruzioni(jmp $) e gestire gli interrupt del t
+                             imer. Dopo 1000 interrupt il programma accende o spegne il led
+----                 248     CSEG AT 0x000B ;dove punta l'interrupt del timer 0
+000B 020000   F      249             jmp TIMER
+                     250     
                      251     
-                     252     ;impostazione di un timer
+----                 252     RSEG PRINCIPALE
                      253     
-----                 254     CSEG AT 0x000B
-000B 020000   F      255             jmp TIMER
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     5
+0000                 254     TIMER:
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     5
 
-                     256             
-                     257     
-----                 258     RSEG PRINCIPALE
+0000 C28C            255         CLR TR0
+0002 C28D            256         CLR TF0
+0004 D802            257             DJNZ R0, NULLA
+0006 8003            258             JMP SCELTA
                      259     
-                     260     
-                     261     
-0000                 262     TIMER:
-0000 D802            263             DJNZ R0, NULLA
-0002 8001            264             JMP SCELTA
-                     265     
-0004                 266     NULLA:
-0004 32              267             RETI
-0005                 268     SCELTA:
-                     269             ;SE R1 è 1 ALLORA ACCENDO, SE è 0 SPENGO
-0005 E9              270             MOV A, R1
-0006 6002            271             JZ ACCENSIONE
-0008 7007            272             JNZ SPEGNIMENTO
-                     273     
-000A                 274     ACCENSIONE:
-000A D296            275             SETB P1.6
-000C 78E8            276             MOV R0, #1000
-*** __________________________________________^
-*** WARNING #A52 IN 276 (led.a51, LINE 41): VALUE HAS BEEN TRUNCATED TO 8 BITS
-000E 7901            277             MOV R1,#1
-0010 32              278             RETI
-                     279     
-                     280     
-0011                 281     SPEGNIMENTO:
-0011 C296            282             CLR P1.6
-0013 78E8            283             MOV R0, #1000
-*** __________________________________________^
-*** WARNING #A52 IN 283 (led.a51, LINE 48): VALUE HAS BEEN TRUNCATED TO 8 BITS
-0015 7900            284             MOV R1,#0
-0017 32              285             RETI
-                     286             
-0018 120000   F      287     START: LCALL Init_Device
-001B 78E8            288     MOV R0, #1000
-*** __________________________________^
-*** WARNING #A52 IN 288 (led.a51, LINE 53): VALUE HAS BEEN TRUNCATED TO 8 BITS
-001D 7900            289     MOV R1, #0
+0008                 260     NULLA:
+0008 D28C            261         SETB TR0; faccio ripartire il micro
+000A 32              262             RETI
+                     263             
+000B                 264     SCELTA:
+                     265             ;SE R1 è 1 ALLORA ACCENDO, SE è 0 SPENGO
+000B E9              266             MOV A, R1
+000C 6002            267             JZ ACCENSIONE
+000E 7009            268             JNZ SPEGNIMENTO
+                     269     
+0010                 270     ACCENSIONE:
+0010 D296            271             SETB P1.6
+0012 7864            272             MOV R0, #100
+0014 7901            273             MOV R1,#1
+0016 D28C            274             SETB TR0; faccio ripartire il micro
+0018 32              275             RETI
+                     276     
+0019                 277     SPEGNIMENTO:
+0019 C296            278             CLR P1.6
+001B 7864            279             MOV R0, #100
+001D 7900            280             MOV R1,#0
+001F D28C            281             SETB TR0; faccio ripartire il micro
+0021 32              282             RETI
+                     283     
+0022 120000   F      284     START: LCALL Init_Device
+                     285     
+0025 7864            286     MOV R0, #100
+0027 7900            287     MOV R1, #0
+                     288     
+0029 80FE            289     jmp $
                      290     
-001F 80FE            291     jmp $ 
-                     292     
-                     293     END
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     6
+                     291     END
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     6
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -326,7 +319,7 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 AA . . . . . . . .  B ADDR   00C0H.2 A   
 AC . . . . . . . .  B ADDR   00D0H.6 A   
 ACC. . . . . . . .  D ADDR   00E0H   A   
-ACCENSIONE . . . .  C ADDR   000AH   R   SEG=PRINCIPALE
+ACCENSIONE . . . .  C ADDR   0010H   R   SEG=PRINCIPALE
 AD0BUSY. . . . . .  B ADDR   00E8H.4 A   
 AD0EN. . . . . . .  B ADDR   00E8H.7 A   
 AD0INT . . . . . .  B ADDR   00E8H.5 A   
@@ -383,7 +376,7 @@ ENSMB. . . . . . .  B ADDR   00C0H.6 A
 ES . . . . . . . .  B ADDR   00A8H.4 A   
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
 ET1. . . . . . . .  B ADDR   00A8H.3 A   
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     7
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     7
 
 ET2. . . . . . . .  B ADDR   00A8H.5 A   
 EX0. . . . . . . .  B ADDR   00A8H.0 A   
@@ -403,7 +396,7 @@ IT0. . . . . . . .  B ADDR   0088H.0 A
 IT1. . . . . . . .  B ADDR   0088H.2 A   
 MODF . . . . . . .  B ADDR   00F8H.5 A   
 MSTEN. . . . . . .  B ADDR   00F8H.1 A   
-NULLA. . . . . . .  C ADDR   0004H   R   SEG=PRINCIPALE
+NULLA. . . . . . .  C ADDR   0008H   R   SEG=PRINCIPALE
 OSCICN . . . . . .  D ADDR   00B2H   A   
 OSCXCN . . . . . .  D ADDR   00B1H   A   
 OV . . . . . . . .  B ADDR   00D0H.2 A   
@@ -443,7 +436,7 @@ PCA0H. . . . . . .  D ADDR   00F9H   A
 PCA0L. . . . . . .  D ADDR   00E9H   A   
 PCA0MD . . . . . .  D ADDR   00D9H   A   
 PCON . . . . . . .  D ADDR   0087H   A   
-PRINCIPALE . . . .  C SEG    0021H       REL=UNIT
+PRINCIPALE . . . .  C SEG    002BH       REL=UNIT
 PS . . . . . . . .  B ADDR   00B8H.4 A   
 PSCTL. . . . . . .  D ADDR   008FH   A   
 PSW. . . . . . . .  D ADDR   00D0H   A   
@@ -451,7 +444,7 @@ PT0. . . . . . . .  B ADDR   00B8H.1 A
 PT1. . . . . . . .  B ADDR   00B8H.3 A   
 PT2. . . . . . . .  B ADDR   00B8H.5 A   
 PX0. . . . . . . .  B ADDR   00B8H.0 A   
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     8
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     8
 
 PX1. . . . . . . .  B ADDR   00B8H.2 A   
 RB8. . . . . . . .  B ADDR   0098H.2 A   
@@ -473,7 +466,7 @@ SADEN0 . . . . . .  D ADDR   00B9H   A
 SADEN1 . . . . . .  D ADDR   00AEH   A   
 SBUF0. . . . . . .  D ADDR   0099H   A   
 SBUF1. . . . . . .  D ADDR   00F2H   A   
-SCELTA . . . . . .  C ADDR   0005H   R   SEG=PRINCIPALE
+SCELTA . . . . . .  C ADDR   000BH   R   SEG=PRINCIPALE
 SCON0. . . . . . .  D ADDR   0098H   A   
 SCON1. . . . . . .  D ADDR   00F1H   A   
 SI . . . . . . . .  B ADDR   00C0H.3 A   
@@ -489,7 +482,7 @@ SMB0STA. . . . . .  D ADDR   00C1H   A
 SMBFTE . . . . . .  B ADDR   00C0H.1 A   
 SMBTOE . . . . . .  B ADDR   00C0H.0 A   
 SP . . . . . . . .  D ADDR   0081H   A   
-SPEGNIMENTO. . . .  C ADDR   0011H   R   SEG=PRINCIPALE
+SPEGNIMENTO. . . .  C ADDR   0019H   R   SEG=PRINCIPALE
 SPI0CFG. . . . . .  D ADDR   009AH   A   
 SPI0CKR. . . . . .  D ADDR   009DH   A   
 SPI0CN . . . . . .  D ADDR   00F8H   A   
@@ -497,7 +490,7 @@ SPI0DAT. . . . . .  D ADDR   009BH   A
 SPIEN. . . . . . .  B ADDR   00F8H.0 A   
 SPIF . . . . . . .  B ADDR   00F8H.7 A   
 STA. . . . . . . .  B ADDR   00C0H.5 A   
-START. . . . . . .  C ADDR   0018H   R   SEG=PRINCIPALE
+START. . . . . . .  C ADDR   0022H   R   SEG=PRINCIPALE
 STO. . . . . . . .  B ADDR   00C0H.4 A   
 T2CON. . . . . . .  D ADDR   00C8H   A   
 T4CON. . . . . . .  D ADDR   00C9H   A   
@@ -519,7 +512,7 @@ TL2. . . . . . . .  D ADDR   00CCH   A
 TL4. . . . . . . .  D ADDR   00F4H   A   
 TMOD . . . . . . .  D ADDR   0089H   A   
 TMR3CN . . . . . .  D ADDR   0091H   A   
-A51 MACRO ASSEMBLER  LED                                                                  10/14/2019 19:52:16 PAGE     9
+A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     9
 
 TMR3H. . . . . . .  D ADDR   0095H   A   
 TMR3L. . . . . . .  D ADDR   0094H   A   
@@ -540,4 +533,4 @@ XBR2 . . . . . . .  D ADDR   00E3H   A
 REGISTER BANK(S) USED: 0 
 
 
-ASSEMBLY COMPLETE.  3 WARNING(S), 0 ERROR(S)
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
