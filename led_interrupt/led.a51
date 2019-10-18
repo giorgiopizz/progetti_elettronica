@@ -9,8 +9,8 @@ NAME Uso_del_led
 		JMP START
 
 
-;scopo di questo programma è eseguire delle istruzioni(jmp $) e gestire gli interrupt del timer. Dopo 1000 interrupt il programma accende o spegne il led
-CSEG AT 0x000B ;dove punta l'interrupt del timer 0
+	;scopo di questo programma è eseguire delle istruzioni(jmp $) e gestire gli interrupt del timer. Dopo 255 interrupt il programma accende o spegne il led
+	CSEG AT 0x000B ;dove punta l'interrupt del timer 0
 	jmp TIMER
 
 

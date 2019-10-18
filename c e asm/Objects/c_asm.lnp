@@ -1,0 +1,5 @@
+".\Objects\asm_code.obj",
+".\Objects\configurazione.obj",
+".\Objects\principale.obj" 
+TO ".\Objects\c_asm" 
+PRINT(".\Listings\c_asm.m51") RAMSIZE(256) 
