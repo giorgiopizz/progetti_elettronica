@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     1
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   00A5          +1    55     P1MDOUT  DATA  0A5H   ; PORT 1 OUTPUT MODE CONFIGURATION
   00A6          +1    56     P2MDOUT  DATA  0A6H   ; PORT 2 OUTPUT MODE CONFIGURATION
   00A7          +1    57     P3MDOUT  DATA  0A7H   ; PORT 3 OUTPUT MODE CONFIGURATION
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     2
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     2
 
   00A8          +1    58     IE       DATA  0A8H   ; INTERRUPT ENABLE
   00A9          +1    59     SADDR0   DATA  0A9H   ; SERIAL PORT 0 SLAVE ADDRESS
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00EB          +1   121     PCA0CPL1 DATA  0EBH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 1 - LOW BYTE
   00EC          +1   122     PCA0CPL2 DATA  0ECH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 2 - LOW BYTE
   00ED          +1   123     PCA0CPL3 DATA  0EDH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 3 - LOW BYTE
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     3
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     3
 
   00EE          +1   124     PCA0CPL4 DATA  0EEH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 4 - LOW BYTE
   00EF          +1   125     RSTSRC   DATA  0EFH   ; RESET SOURCE 
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00C3          +1   187     SI       BIT   SMB0CN.3 ; SMBUS 0 INTERRUPT PENDING FLAG
   00C4          +1   188     STO      BIT   SMB0CN.4 ; SMBUS 0 STOP FLAG
   00C5          +1   189     STA      BIT   SMB0CN.5 ; SMBUS 0 START FLAG
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     4
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     4
 
   00C6          +1   190     ENSMB    BIT   SMB0CN.6 ; SMBUS 0 ENABLE 
                 +1   191     ;
@@ -269,7 +269,7 @@ LOC  OBJ            LINE     SOURCE
                      253     
 0007                 254     Timer_Init:
 0007 758810          255         mov  TCON,      #010h
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     5
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     5
 
 000A 758901          256         mov  TMOD,      #001h
 000D 75C804          257         mov  T2CON,     #004h
@@ -310,43 +310,45 @@ LOC  OBJ            LINE     SOURCE
                      292         ; P3.4  -  Unassigned,  Open-Drain, Digital
                      293         ; P3.5  -  Unassigned,  Open-Drain, Digital
                      294         ; P3.6  -  Unassigned,  Open-Drain, Digital
-                     295         ; P3.7  -  Unassigned,  Open-Drain, Digital
+                     295         ; P3.7  -  Unassigned,  Push-Pull,  Digital
                      296     
 0011 75A540          297         mov  P1MDOUT,   #040h
-0014 75E340          298         mov  XBR2,      #040h
-0017 22              299         ret
-                     300     
-0018                 301     Oscillator_Init:
-0018 75B167          302         mov  OSCXCN,    #067h
-001B 781E            303         mov  R0,        #030        ; Wait 1ms for initialization
-001D                 304     Osc_Wait1:
-001D E4              305         clr  A
-001E D5E0FD          306         djnz ACC,       $
-0021 D8FA            307         djnz R0,        Osc_Wait1
-0023                 308     Osc_Wait2:
-0023 E5B1            309         mov  A,         OSCXCN
-0025 30E7FB          310         jnb  ACC.7,     Osc_Wait2
-0028 75B208          311         mov  OSCICN,    #008h
-002B 22              312         ret
-                     313     
-002C                 314     Interrupts_Init:
-002C 75A882          315         mov  IE,        #082h
-002F 22              316         ret
-                     317     
-                     318     ; Initialization function for device,
-                     319     ; Call Init_Device from your main program
-0030                 320     Init_Device:
-0030 120000   F      321         lcall Reset_Sources_Init
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     6
+0014 75A780          298         mov  P3MDOUT,   #080h
+0017 75E340          299         mov  XBR2,      #040h
+001A 22              300         ret
+                     301     
+001B                 302     Oscillator_Init:
+001B 75B167          303         mov  OSCXCN,    #067h
+001E 781E            304         mov  R0,        #030        ; Wait 1ms for initialization
+0020                 305     Osc_Wait1:
+0020 E4              306         clr  A
+0021 D5E0FD          307         djnz ACC,       $
+0024 D8FA            308         djnz R0,        Osc_Wait1
+0026                 309     Osc_Wait2:
+0026 E5B1            310         mov  A,         OSCXCN
+0028 30E7FB          311         jnb  ACC.7,     Osc_Wait2
+002B 75B208          312         mov  OSCICN,    #008h
+002E 22              313         ret
+                     314     
+002F                 315     Interrupts_Init:
+002F 75A882          316         mov  IE,        #082h
+0032 75E720          317         mov  EIE2,      #020h
+0035 22              318         ret
+                     319     
+                     320     ; Initialization function for device,
+                     321     ; Call Init_Device from your main program
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     6
 
-0033 120000   F      322         lcall Timer_Init
-0036 120000   F      323         lcall Port_IO_Init
-0039 120000   F      324         lcall Oscillator_Init
-003C 120000   F      325         lcall Interrupts_Init
-003F 22              326         ret
-                     327     
-                     328     end
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     7
+0036                 322     Init_Device:
+0036 120000   F      323         lcall Reset_Sources_Init
+0039 120000   F      324         lcall Timer_Init
+003C 120000   F      325         lcall Port_IO_Init
+003F 120000   F      326         lcall Oscillator_Init
+0042 120000   F      327         lcall Interrupts_Init
+0045 22              328         ret
+                     329     
+                     330     end
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     7
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -414,7 +416,7 @@ ES . . . . . . . .  B ADDR   00A8H.4 A
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
 ET1. . . . . . . .  B ADDR   00A8H.3 A   
 ET2. . . . . . . .  B ADDR   00A8H.5 A   
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     8
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     8
 
 EX0. . . . . . . .  B ADDR   00A8H.0 A   
 EX1. . . . . . . .  B ADDR   00A8H.2 A   
@@ -427,19 +429,19 @@ FLSCL. . . . . . .  D ADDR   00B6H   A
 IE . . . . . . . .  D ADDR   00A8H   A   
 IE0. . . . . . . .  B ADDR   0088H.1 A   
 IE1. . . . . . . .  B ADDR   0088H.3 A   
-INIT . . . . . . .  C SEG    0040H       REL=UNIT
-INIT_DEVICE. . . .  C ADDR   0030H   R   SEG=INIT
-INTERRUPTS_INIT. .  C ADDR   002CH   R   SEG=INIT
+INIT . . . . . . .  C SEG    0046H       REL=UNIT
+INIT_DEVICE. . . .  C ADDR   0036H   R   SEG=INIT
+INTERRUPTS_INIT. .  C ADDR   002FH   R   SEG=INIT
 IP . . . . . . . .  D ADDR   00B8H   A   
 IT0. . . . . . . .  B ADDR   0088H.0 A   
 IT1. . . . . . . .  B ADDR   0088H.2 A   
 MODF . . . . . . .  B ADDR   00F8H.5 A   
 MSTEN. . . . . . .  B ADDR   00F8H.1 A   
 OSCICN . . . . . .  D ADDR   00B2H   A   
-OSCILLATOR_INIT. .  C ADDR   0018H   R   SEG=INIT
+OSCILLATOR_INIT. .  C ADDR   001BH   R   SEG=INIT
 OSCXCN . . . . . .  D ADDR   00B1H   A   
-OSC_WAIT1. . . . .  C ADDR   001DH   R   SEG=INIT
-OSC_WAIT2. . . . .  C ADDR   0023H   R   SEG=INIT
+OSC_WAIT1. . . . .  C ADDR   0020H   R   SEG=INIT
+OSC_WAIT2. . . . .  C ADDR   0026H   R   SEG=INIT
 OV . . . . . . . .  B ADDR   00D0H.2 A   
 P. . . . . . . . .  B ADDR   00D0H.0 A   
 P0 . . . . . . . .  D ADDR   0080H   A   
@@ -482,7 +484,7 @@ PS . . . . . . . .  B ADDR   00B8H.4 A
 PSCTL. . . . . . .  D ADDR   008FH   A   
 PSW. . . . . . . .  D ADDR   00D0H   A   
 PT0. . . . . . . .  B ADDR   00B8H.1 A   
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE     9
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE     9
 
 PT1. . . . . . . .  B ADDR   00B8H.3 A   
 PT2. . . . . . . .  B ADDR   00B8H.5 A   
@@ -550,7 +552,7 @@ TL1. . . . . . . .  D ADDR   008BH   A
 TL2. . . . . . . .  D ADDR   00CCH   A   
 TL4. . . . . . . .  D ADDR   00F4H   A   
 TMOD . . . . . . .  D ADDR   0089H   A   
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 11:35:58 PAGE    10
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/18/2019 16:44:30 PAGE    10
 
 TMR3CN . . . . . .  D ADDR   0091H   A   
 TMR3H. . . . . . .  D ADDR   0095H   A   

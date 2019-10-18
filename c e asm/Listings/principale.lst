@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/18/2019 11:35:58 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/18/2019 16:44:30 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE
@@ -10,65 +10,97 @@ line level    source
 
    1          //principale.c
    2          #include "c8051F020.h"
-   3          //#include <stdio.h>
+   3          
    4          
-   5          char idata stack1[16];
-   6          extern char idata stack2;
-   7          int luminosity = 75;
-   8          int loops_on;
-   9          int loops; //lo stato iniziale è 1
-  10          int led_status=0;
-  11          extern void START(void);
-  12          
-  13          
-  14          void interruzione_timer(void) interrupt 1{
-  15   1        //fermo
-  16   1        TR0=0;
-  17   1        TF0=0;
-  18   1        loops--;
-  19   1        if (loops<=0){
-  20   2            if(led_status){
-  21   3              //accendo
-  22   3              P1_6=1;
-  23   3              led_status=0;
-  24   3              loops=loops_on;
-  25   3            }
-  26   2            else{
-  27   3              //spengo
-  28   3              P1_6=0;
-  29   3              led_status=1;
-  30   3              loops=255-loops_on;
-  31   3              //faccio ripartire
-  32   3            }
-  33   2        }
-  34   1        TR0=1;
-  35   1      }
-  36          void interruzione_pulsante(void) interrupt 19{
-  37   1        //setto luminoisty a 75
-  38   1        luminosity=75;
-  39   1        loops_on=luminosity*255/100;
-  40   1        led_status=0;
-  41   1        //poi può rincominciare
-  42   1      }
-  43          void main(){
-  44   1        SP = (char) (&stack1);
-  45   1        START();
-  46   1        loops_on=(255*luminosity/100);
-  47   1        loops=loops_on;
-  48   1        //qui posso fare quello che voglio
-  49   1        while(1);
-  50   1      }
+   5          //char idata stack1[16];
+   6          //extern char idata stack2;
+   7          //extern void START(void);
+   8          extern void Init_Device(void);
+   9          int luminosity = 25;
+  10          int loops_on;
+  11          int loops; //lo stato iniziale è 1
+  12          int led_status=0;
+  13          int lum_status=0;//lo stato luminosity indica le opzioni(25, 50, 75)
+  14          
+  15          
+  16          void interruzione_timer(void) interrupt 1{
+  17   1        //fermo
+  18   1        TR0=0;
+  19   1        TF0=0;
+  20   1        loops--;
+  21   1        if (loops<=0){
+  22   2            if(led_status){
+  23   3              //accendo
+  24   3              P1_6=1;
+  25   3              led_status=0;
+  26   3              loops=loops_on;
+  27   3            }
+  28   2            else{
+  29   3              //spengo
+  30   3              P1_6=0;
+  31   3              led_status=1;
+  32   3              loops=255-loops_on;
+  33   3              //faccio ripartire
+  34   3            }
+  35   2        }
+  36   1        TR0=1;
+  37   1      }
+  38          void interruzione_pulsante(void) interrupt 19{
+  39   1        TR0=0;
+  40   1        TF0=0;
+  41   1        //lum status  può essere 0, 1, 2
+  42   1        if(lum_status<2){
+  43   2          lum_status++;
+  44   2        }
+  45   1        else{
+  46   2          lum_status=0;
+  47   2        }
+  48   1        switch(lum_status){
+  49   2          case 0:
+  50   2            luminosity=25;
+  51   2            break;
+  52   2          case 1:
+  53   2            luminosity=50;
+  54   2            break;
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/18/2019 16:44:30 PAGE 2   
+
+  55   2          case 2:
+  56   2            luminosity=75;
+  57   2            break;
+  58   2        }
+  59   1        loops_on=255*luminosity/100;
+  60   1        //resetto tutto
+  61   1        loops=loops_on;
+  62   1        led_status=0;
+  63   1        P1_6=1;
+  64   1        
+  65   1        /*se volessi resettare il flag dell'interrupt esterna 7
+  66   1        dovrei scrivere*/
+  67   1        //P3IF &= ~0x80;
+  68   1        /*è necessario rimettere a 1 il flag della porta P3.7
+  69   1        anche se probabilmente schiacciando il bottone verrà
+  70   1        in automatico settato a 1 dopo*/
+  71   1        P3_7=1;
+  72   1        //poi può rincominciare
+  73   1        TR0=1;
+  74   1      }
+  75          void main(){
+  76   1        //SP = (char) (&stack1);
+  77   1        //START();
+  78   1        Init_Device();
+  79   1        loops_on=255*luminosity/100;
+  80   1        loops=loops_on;//qui posso fare quello che voglio
+  81   1        while(1);
+  82   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    180    ----
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/18/2019 11:35:58 PAGE 2   
-
+   CODE SIZE        =    254    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      8    ----
-   IDATA SIZE       =     16    ----
+   DATA SIZE        =     10    ----
+   IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 

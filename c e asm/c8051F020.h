@@ -236,3 +236,4 @@ sbit SPIEN    =   SPI0CN ^ 0;       /* SPI 0 SPI ENABLE				*/
 
 
 sbit P1_6 = P1 ^ 6;
+sbit P3_7 = P3 ^ 7;

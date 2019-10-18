@@ -57,9 +57,10 @@ Port_IO_Init:
     ; P3.4  -  Unassigned,  Open-Drain, Digital
     ; P3.5  -  Unassigned,  Open-Drain, Digital
     ; P3.6  -  Unassigned,  Open-Drain, Digital
-    ; P3.7  -  Unassigned,  Open-Drain, Digital
+    ; P3.7  -  Unassigned,  Push-Pull,  Digital
 
     mov  P1MDOUT,   #040h
+    mov  P3MDOUT,   #080h
     mov  XBR2,      #040h
     ret
 
@@ -78,6 +79,7 @@ Osc_Wait2:
 
 Interrupts_Init:
     mov  IE,        #082h
+    mov  EIE2,      #020h
     ret
 
 ; Initialization function for device,
