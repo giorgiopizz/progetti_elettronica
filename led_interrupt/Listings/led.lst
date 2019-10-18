@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     1
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   00A8          +1    55     IE       DATA  0A8H   ; INTERRUPT ENABLE
   00A9          +1    56     SADDR0   DATA  0A9H   ; SERIAL PORT 0 SLAVE ADDRESS
   00AA          +1    57     ADC1CN  DATA  0AAH   ; ADC 1 CONTROL
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     2
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     2
 
   00AB          +1    58     ADC1CF   DATA  0ABH   ; ADC 1 ANALOG MUX CONFIGURATION
   00AC          +1    59     AMX1SL   DATA  0ACH   ; ADC 1 ANALOG MUX CHANNEL SELECT
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00EE          +1   121     PCA0CPL4 DATA  0EEH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 4 - LOW BYTE
   00EF          +1   122     RSTSRC   DATA  0EFH   ; RESET SOURCE 
   00F0          +1   123     B        DATA  0F0H   ; B REGISTER
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     3
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     3
 
   00F1          +1   124     SCON1    DATA  0F1H   ; SERIAL PORT 1 CONTROL
   00F2          +1   125     SBUF1    DATA  0F2H   ; SERAIL PORT 1 DATA
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00C6          +1   187     ENSMB    BIT   SMB0CN.6 ; SMBUS 0 ENABLE 
                 +1   188     ;
                 +1   189     ; T2CON C8H
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     4
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     4
 
   00C8          +1   190     CPRL2    BIT   T2CON.0 ; CAPTURE OR RELOAD SELECT
   00C9          +1   191     CT2      BIT   T2CON.1 ; TIMER OR COUNTER SELECT
@@ -269,7 +269,7 @@ LOC  OBJ            LINE     SOURCE
 ----                 252     RSEG PRINCIPALE
                      253     
 0000                 254     TIMER:
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     5
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     5
 
 0000 C28C            255         CLR TR0
 0002 C28D            256         CLR TF0
@@ -288,27 +288,27 @@ LOC  OBJ            LINE     SOURCE
                      269     
 0010                 270     ACCENSIONE:
 0010 D296            271             SETB P1.6
-0012 7864            272             MOV R0, #100
+0012 78FF            272             MOV R0, #255
 0014 7901            273             MOV R1,#1
 0016 D28C            274             SETB TR0; faccio ripartire il micro
 0018 32              275             RETI
                      276     
 0019                 277     SPEGNIMENTO:
 0019 C296            278             CLR P1.6
-001B 7864            279             MOV R0, #100
+001B 78FF            279             MOV R0, #255
 001D 7900            280             MOV R1,#0
 001F D28C            281             SETB TR0; faccio ripartire il micro
 0021 32              282             RETI
                      283     
 0022 120000   F      284     START: LCALL Init_Device
                      285     
-0025 7864            286     MOV R0, #100
+0025 78FF            286     MOV R0, #255
 0027 7900            287     MOV R1, #0
                      288     
 0029 80FE            289     jmp $
                      290     
                      291     END
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     6
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     6
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -376,7 +376,7 @@ ENSMB. . . . . . .  B ADDR   00C0H.6 A
 ES . . . . . . . .  B ADDR   00A8H.4 A   
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
 ET1. . . . . . . .  B ADDR   00A8H.3 A   
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     7
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     7
 
 ET2. . . . . . . .  B ADDR   00A8H.5 A   
 EX0. . . . . . . .  B ADDR   00A8H.0 A   
@@ -444,7 +444,7 @@ PT0. . . . . . . .  B ADDR   00B8H.1 A
 PT1. . . . . . . .  B ADDR   00B8H.3 A   
 PT2. . . . . . . .  B ADDR   00B8H.5 A   
 PX0. . . . . . . .  B ADDR   00B8H.0 A   
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     8
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     8
 
 PX1. . . . . . . .  B ADDR   00B8H.2 A   
 RB8. . . . . . . .  B ADDR   0098H.2 A   
@@ -512,7 +512,7 @@ TL2. . . . . . . .  D ADDR   00CCH   A
 TL4. . . . . . . .  D ADDR   00F4H   A   
 TMOD . . . . . . .  D ADDR   0089H   A   
 TMR3CN . . . . . .  D ADDR   0091H   A   
-A51 MACRO ASSEMBLER  LED                                                                  10/17/2019 21:00:19 PAGE     9
+A51 MACRO ASSEMBLER  LED                                                                  10/18/2019 08:44:06 PAGE     9
 
 TMR3H. . . . . . .  D ADDR   0095H   A   
 TMR3L. . . . . . .  D ADDR   0094H   A   
