@@ -1,5 +1,9 @@
 //principale.c
 #include "c8051F020.h"
+#define n_loops 255
+/*n_loops può essere decrementato per avere 
+una percezione migliore della luminosità. Diminuendo i loops
+che deve fare, aumenta la frequenza.*/
 
 
 //char idata stack1[16];
@@ -56,7 +60,7 @@ void interruzione_pulsante(void) interrupt 19{
 			luminosity=75;
 			break;
 	}
-	loops_on=255*luminosity/100;
+	loops_on=n_loops*luminosity/100;
 	//resetto tutto
 	loops=loops_on;
 	led_status=0;
@@ -76,7 +80,7 @@ void main(){
 	//SP = (char) (&stack1);
 	//START();
 	Init_Device();
-	loops_on=255*luminosity/100;
+	loops_on=n_loops*luminosity/100;
 	loops=loops_on;//qui posso fare quello che voglio
 	while(1);
 }

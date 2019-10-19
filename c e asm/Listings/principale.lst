@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/18/2019 16:44:30 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/19/2019 10:51:03 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE
@@ -10,7 +10,7 @@ line level    source
 
    1          //principale.c
    2          #include "c8051F020.h"
-   3          
+   3          #define n_loops 255
    4          
    5          //char idata stack1[16];
    6          //extern char idata stack2;
@@ -62,13 +62,13 @@ line level    source
   52   2          case 1:
   53   2            luminosity=50;
   54   2            break;
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/18/2019 16:44:30 PAGE 2   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/19/2019 10:51:03 PAGE 2   
 
   55   2          case 2:
   56   2            luminosity=75;
   57   2            break;
   58   2        }
-  59   1        loops_on=255*luminosity/100;
+  59   1        loops_on=n_loops*luminosity/100;
   60   1        //resetto tutto
   61   1        loops=loops_on;
   62   1        led_status=0;
@@ -88,7 +88,7 @@ line level    source
   76   1        //SP = (char) (&stack1);
   77   1        //START();
   78   1        Init_Device();
-  79   1        loops_on=255*luminosity/100;
+  79   1        loops_on=n_loops*luminosity/100;
   80   1        loops=loops_on;//qui posso fare quello che voglio
   81   1        while(1);
   82   1      }
