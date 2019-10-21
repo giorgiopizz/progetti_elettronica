@@ -23,9 +23,13 @@ Timer_Init:
     mov  T2CON,     #004h
     ret
 
+UART_Init:
+    mov  SCON0,     #010h
+    ret
+
 Port_IO_Init:
-    ; P0.0  -  Unassigned,  Open-Drain, Digital
-    ; P0.1  -  Unassigned,  Open-Drain, Digital
+    ; P0.0  -  TX0 (UART0), Open-Drain, Digital
+    ; P0.1  -  RX0 (UART0), Open-Drain, Digital
     ; P0.2  -  Unassigned,  Open-Drain, Digital
     ; P0.3  -  Unassigned,  Open-Drain, Digital
     ; P0.4  -  Unassigned,  Open-Drain, Digital
@@ -61,6 +65,7 @@ Port_IO_Init:
     ; P3.7  -  Unassigned,  Open-Drain, Digital
 
     mov  P1MDOUT,   #040h
+    mov  XBR0,      #004h
     mov  XBR2,      #040h
     ret
 
@@ -78,7 +83,7 @@ Osc_Wait2:
     ret
 
 Interrupts_Init:
-    mov  IE,        #082h
+    mov  IE,        #092h
     mov  EIE2,      #020h
     ret
 
@@ -87,6 +92,7 @@ Interrupts_Init:
 Init_Device:
     lcall Reset_Sources_Init
     lcall Timer_Init
+    lcall UART_Init
     lcall Port_IO_Init
     lcall Oscillator_Init
     lcall Interrupts_Init

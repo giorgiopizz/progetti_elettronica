@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/19/2019 10:51:03 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/21/2019 10:03:57 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE
@@ -10,97 +10,92 @@ line level    source
 
    1          //principale.c
    2          #include "c8051F020.h"
-   3          #define n_loops 255
-   4          
-   5          //char idata stack1[16];
-   6          //extern char idata stack2;
-   7          //extern void START(void);
-   8          extern void Init_Device(void);
-   9          int luminosity = 25;
-  10          int loops_on;
-  11          int loops; //lo stato iniziale è 1
-  12          int led_status=0;
-  13          int lum_status=0;//lo stato luminosity indica le opzioni(25, 50, 75)
-  14          
-  15          
-  16          void interruzione_timer(void) interrupt 1{
-  17   1        //fermo
-  18   1        TR0=0;
-  19   1        TF0=0;
-  20   1        loops--;
-  21   1        if (loops<=0){
-  22   2            if(led_status){
-  23   3              //accendo
-  24   3              P1_6=1;
-  25   3              led_status=0;
-  26   3              loops=loops_on;
-  27   3            }
-  28   2            else{
-  29   3              //spengo
-  30   3              P1_6=0;
-  31   3              led_status=1;
-  32   3              loops=255-loops_on;
-  33   3              //faccio ripartire
-  34   3            }
-  35   2        }
-  36   1        TR0=1;
-  37   1      }
-  38          void interruzione_pulsante(void) interrupt 19{
-  39   1        TR0=0;
-  40   1        TF0=0;
-  41   1        //lum status  può essere 0, 1, 2
-  42   1        if(lum_status<2){
-  43   2          lum_status++;
-  44   2        }
-  45   1        else{
-  46   2          lum_status=0;
-  47   2        }
-  48   1        switch(lum_status){
-  49   2          case 0:
-  50   2            luminosity=25;
-  51   2            break;
-  52   2          case 1:
-  53   2            luminosity=50;
-  54   2            break;
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/19/2019 10:51:03 PAGE 2   
+   3          #define n_loops 5
+   4          /*n_loops può essere decrementato per avere 
+   5          una percezione migliore della luminosità. Diminuendo i loops
+   6          che deve fare, aumenta la frequenza.*/
+   7          
+   8          
+   9          char idata stack1[16];
+  10          //extern char idata stack2;
+  11          //extern void START(void);
+  12          extern void Init_Device(void);
+  13          int luminosity = 0;
+  14          int loops_on;
+  15          int loops; //lo stato iniziale è 1
+  16          int led_status=0;
+  17          int lum_status=0;//lo stato luminosity indica le opzioni(0,25, 50, 75,100)
+  18          
+  19          
+  20          void interruzione_timer(void) interrupt 1{
+  21   1        //fermo
+  22   1        TR0=0;
+  23   1        TF0=0;
+  24   1        loops--;
+  25   1        if (loops<=0){
+  26   2            if(led_status){
+  27   3              //accendo
+  28   3              P1_6=1;
+  29   3              led_status=0;
+  30   3              loops=loops_on;
+  31   3            }
+  32   2            else{
+  33   3              //spengo
+  34   3              P1_6=0;
+  35   3              led_status=1;
+  36   3              loops=n_loops-loops_on;
+  37   3              //faccio ripartire
+  38   3            }
+  39   2        }
+  40   1        TR0=1;
+  41   1      }
+  42          void interruzione_pulsante(void) interrupt 19{
+  43   1        TR0=0;
+  44   1        TF0=0;
+  45   1        //lum status  può essere 0, 1, 2,3,4
+  46   1        if(lum_status<4){
+  47   2          lum_status++;
+  48   2        }
+  49   1        else{
+  50   2          lum_status=0;
+  51   2        }
+  52   1        luminosity=lum_status*25;
+  53   1        loops_on=n_loops*luminosity/100;
+  54   1        //resetto tutto
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/21/2019 10:03:57 PAGE 2   
 
-  55   2          case 2:
-  56   2            luminosity=75;
-  57   2            break;
-  58   2        }
-  59   1        loops_on=n_loops*luminosity/100;
-  60   1        //resetto tutto
-  61   1        loops=loops_on;
-  62   1        led_status=0;
-  63   1        P1_6=1;
-  64   1        
-  65   1        /*se volessi resettare il flag dell'interrupt esterna 7
-  66   1        dovrei scrivere*/
-  67   1        //P3IF &= ~0x80;
-  68   1        /*è necessario rimettere a 1 il flag della porta P3.7
-  69   1        anche se probabilmente schiacciando il bottone verrà
-  70   1        in automatico settato a 1 dopo*/
-  71   1        P3_7=1;
-  72   1        //poi può rincominciare
-  73   1        TR0=1;
-  74   1      }
-  75          void main(){
-  76   1        //SP = (char) (&stack1);
-  77   1        //START();
-  78   1        Init_Device();
-  79   1        loops_on=n_loops*luminosity/100;
-  80   1        loops=loops_on;//qui posso fare quello che voglio
-  81   1        while(1);
-  82   1      }
+  55   1        loops=loops_on;
+  56   1        led_status=0;
+  57   1        P1_6=1;
+  58   1        
+  59   1        /*se volessi resettare il flag dell'interrupt esterna 7
+  60   1        dovrei scrivere*/
+  61   1        P3IF &= ~0x80;
+  62   1        /*è necessario rimettere a 1 il flag della porta P3.7
+  63   1        anche se probabilmente schiacciando il bottone verrà
+  64   1        in automatico settato a 1 dopo*/
+  65   1        //P3_7=0;
+  66   1        //poi può rincominciare
+  67   1        TR0=1;
+  68   1      }
+  69          void main(){
+  70   1        SP = (char) (&stack1);
+  71   1        //START();
+  72   1        Init_Device();
+  73   1        loops_on=n_loops*luminosity/100;
+  74   1        loops=loops_on;//qui posso fare quello che voglio
+  75   1        //P3IF &= ~0x80;
+  76   1        while(1);
+  77   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    254    ----
+   CODE SIZE        =    229    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =     10    ----
-   IDATA SIZE       =   ----    ----
+   IDATA SIZE       =     16    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 

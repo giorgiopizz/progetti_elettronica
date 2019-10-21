@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     1
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   00A7          +1    55     P3MDOUT  DATA  0A7H   ; PORT 3 OUTPUT MODE CONFIGURATION
   00A8          +1    56     IE       DATA  0A8H   ; INTERRUPT ENABLE
   00A9          +1    57     SADDR0   DATA  0A9H   ; SERIAL PORT 0 SLAVE ADDRESS
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     2
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     2
 
   00AA          +1    58     ADC1CN  DATA  0AAH   ; ADC 1 CONTROL
   00AB          +1    59     ADC1CF   DATA  0ABH   ; ADC 1 ANALOG MUX CONFIGURATION
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00ED          +1   121     PCA0CPL3 DATA  0EDH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 3 - LOW BYTE
   00EE          +1   122     PCA0CPL4 DATA  0EEH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 4 - LOW BYTE
   00EF          +1   123     RSTSRC   DATA  0EFH   ; RESET SOURCE 
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     3
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     3
 
   00F0          +1   124     B        DATA  0F0H   ; B REGISTER
   00F1          +1   125     SCON1    DATA  0F1H   ; SERIAL PORT 1 CONTROL
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00C5          +1   187     STA      BIT   SMB0CN.5 ; SMBUS 0 START FLAG
   00C6          +1   188     ENSMB    BIT   SMB0CN.6 ; SMBUS 0 ENABLE 
                 +1   189     ;
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     4
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     4
 
                 +1   190     ; T2CON C8H
   00C8          +1   191     CPRL2    BIT   T2CON.0 ; CAPTURE OR RELOAD SELECT
@@ -267,7 +267,7 @@ LOC  OBJ            LINE     SOURCE
 0000 120000   F      251             LCALL Init_Device
 0003 22              252             RET
                      253     END
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     5
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -335,7 +335,7 @@ EMI0TC . . . . . .  D ADDR   00A1H   A
 ENSMB. . . . . . .  B ADDR   00C0H.6 A   
 ES . . . . . . . .  B ADDR   00A8H.4 A   
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     6
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     6
 
 ET1. . . . . . . .  B ADDR   00A8H.3 A   
 ET2. . . . . . . .  B ADDR   00A8H.5 A   
@@ -403,7 +403,7 @@ PT1. . . . . . . .  B ADDR   00B8H.3 A
 PT2. . . . . . . .  B ADDR   00B8H.5 A   
 PX0. . . . . . . .  B ADDR   00B8H.0 A   
 PX1. . . . . . . .  B ADDR   00B8H.2 A   
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     7
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     7
 
 RB8. . . . . . . .  B ADDR   0098H.2 A   
 RCAP2H . . . . . .  D ADDR   00CBH   A   
@@ -471,7 +471,7 @@ TMOD . . . . . . .  D ADDR   0089H   A
 TMR3CN . . . . . .  D ADDR   0091H   A   
 TMR3H. . . . . . .  D ADDR   0095H   A   
 TMR3L. . . . . . .  D ADDR   0094H   A   
-A51 MACRO ASSEMBLER  ASM_CODE                                                             10/19/2019 10:51:03 PAGE     8
+A51 MACRO ASSEMBLER  ASM_CODE                                                             10/21/2019 10:03:56 PAGE     8
 
 TMR3RLH. . . . . .  D ADDR   0093H   A   
 TMR3RLL. . . . . .  D ADDR   0092H   A   

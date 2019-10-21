@@ -1,20 +1,20 @@
 //principale.c
 #include "c8051F020.h"
-#define n_loops 255
+#define n_loops 5
 /*n_loops può essere decrementato per avere 
 una percezione migliore della luminosità. Diminuendo i loops
 che deve fare, aumenta la frequenza.*/
 
 
-//char idata stack1[16];
+char idata stack1[16];
 //extern char idata stack2;
 //extern void START(void);
 extern void Init_Device(void);
-int luminosity = 25;
+int luminosity = 0;
 int loops_on;
 int loops; //lo stato iniziale è 1
 int led_status=0;
-int lum_status=0;//lo stato luminosity indica le opzioni(25, 50, 75)
+int lum_status=0;//lo stato luminosity indica le opzioni(0,25, 50, 75,100)
 
 
 void interruzione_timer(void) interrupt 1{
@@ -33,7 +33,7 @@ void interruzione_timer(void) interrupt 1{
 				//spengo
 				P1_6=0;
 				led_status=1;
-				loops=255-loops_on;
+				loops=n_loops-loops_on;
 				//faccio ripartire
 			}
 	}
@@ -42,24 +42,14 @@ void interruzione_timer(void) interrupt 1{
 void interruzione_pulsante(void) interrupt 19{
 	TR0=0;
 	TF0=0;
-	//lum status  può essere 0, 1, 2
-	if(lum_status<2){
+	//lum status  può essere 0, 1, 2,3,4
+	if(lum_status<4){
 		lum_status++;
 	}
 	else{
 		lum_status=0;
 	}
-	switch(lum_status){
-		case 0:
-			luminosity=25;
-			break;
-		case 1:
-			luminosity=50;
-			break;
-		case 2:
-			luminosity=75;
-			break;
-	}
+	luminosity=lum_status*25;
 	loops_on=n_loops*luminosity/100;
 	//resetto tutto
 	loops=loops_on;
@@ -68,19 +58,20 @@ void interruzione_pulsante(void) interrupt 19{
 	
 	/*se volessi resettare il flag dell'interrupt esterna 7
 	dovrei scrivere*/
-	//P3IF &= ~0x80;
+	P3IF &= ~0x80;
 	/*è necessario rimettere a 1 il flag della porta P3.7
 	anche se probabilmente schiacciando il bottone verrà
 	in automatico settato a 1 dopo*/
-	P3_7=1;
+	//P3_7=0;
 	//poi può rincominciare
 	TR0=1;
 }
 void main(){
-	//SP = (char) (&stack1);
+	SP = (char) (&stack1);
 	//START();
 	Init_Device();
 	loops_on=n_loops*luminosity/100;
 	loops=loops_on;//qui posso fare quello che voglio
+	//P3IF &= ~0x80;
 	while(1);
 }
