@@ -17,14 +17,15 @@ Reset_Sources_Init:
     ret
 
 Timer_Init:
-    mov  CKCON,     #008h
-    mov  TCON,      #010h
-    mov  TMOD,      #001h
-    mov  T2CON,     #004h
+    mov  CKCON,     #038h
+    mov  TH1,       #0B8h
+    mov  T2CON,     #034h
+    mov  RCAP2L,    #0B8h
+    mov  RCAP2H,    #0FFh
     ret
 
 UART_Init:
-    mov  SCON0,     #010h
+    mov  SCON0,     #050h
     ret
 
 Port_IO_Init:
@@ -83,8 +84,7 @@ Osc_Wait2:
     ret
 
 Interrupts_Init:
-    mov  IE,        #092h
-    mov  EIE2,      #020h
+    mov  IE,        #090h
     ret
 
 ; Initialization function for device,

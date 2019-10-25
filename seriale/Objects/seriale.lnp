@@ -1,0 +1,4 @@
+".\Objects\principale.obj",
+".\Objects\configurazione.obj" 
+TO ".\Objects\seriale" 
+PRINT(".\Listings\seriale.m51") RAMSIZE(256) 
