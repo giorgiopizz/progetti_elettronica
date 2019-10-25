@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/25/2019 14:10:31 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/25/2019 16:51:48 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE
@@ -11,131 +11,137 @@ line level    source
    1          #include "c8051F020.h"
    2          #define CR 13
    3          #define LF 10
-   4          
-   5          typedef unsigned char uchar;
-   6          extern void Init_Device();
-   7          idata stack[16];
-   8          
-   9          //dico che non mi interessa la comunicazione multiprocessore
-  10          uchar key;
-  11          
-  12          uchar idata msg_da_trasmettere[]={'C','i','a','o',CR,LF};
-  13          uchar lenght_da_trasmettere = 6;
-  14          uchar idata msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
-  15          uchar lenght_errore=10;
-  16          uchar lenght_max = 10;
-  17          
-  18          uchar i=0;
-  19          uchar * puntatore;
-  20          uchar idata msg_ricevuto[10];
-  21          uchar status=0;
-  22          uchar loaded=0;
-  23          /*la trasmissione inizia quando un byte viene scritto nel SBUF0
-  24          viene lanciato un interrupt quando è finita la trasmissione e viene settato
-  25          il flag TI0.
-  26          Per la ricezione bisogna settare REN0(SCON0.4) ad 1. Finisce quando riceve
-  27          il bit di stop, quest'ultimo a seconda che SM20 sia settato ad 1 o a 0 deve
-  28          essere 1 o 0*/
-  29          
-  30          void scelta(void){
-  31   1        //controllo lo status
-  32   1        switch(status){
-  33   2          case(0):
-  34   2            //trasmetto il messaggio di benvenuto
-  35   2            i++;
-  36   2            if (i<lenght_da_trasmettere){
-  37   3              SBUF0=*(puntatore+i);
-  38   3            }
-  39   2            else{
-  40   3              //vado a ricevere
-  41   3              status++;
-  42   3              i=0;
-  43   3              REN0=1;
+   4          #define ML 10
+   5          //ML è Max Lenght
+   6          /*il programma ha 3 sezioni, divise dallo switch in scelta. Nella prima il micro trasmette un messaggio
+   7          di benvenuto, nella seconda trasmetto i caratteri ricevuto, uno alla volta, nella terza memorizza
+   8          10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalità all'altra si usa il #*/
+   9          typedef unsigned char uchar;
+  10          extern void Init_Device();
+  11          idata stack[16];
+  12          
+  13          //dico che non mi interessa la comunicazione multiprocessore
+  14          uchar key;
+  15          
+  16          uchar idata msg_da_trasmettere[]={'C','i','a','o',CR,LF};
+  17          uchar lenght_da_trasmettere = 6;
+  18          uchar idata msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
+  19          uchar lenght_errore=10;
+  20          //uchar lenght_max = 10;
+  21          
+  22          uchar i=0;
+  23          uchar * puntatore;
+  24          uchar idata msg_ricevuto[ML];
+  25          uchar status=0;
+  26          uchar loaded=0;
+  27          
+  28          
+  29          /*la trasmissione inizia quando un byte viene scritto nel SBUF0
+  30          viene lanciato un interrupt quando è finita la trasmissione e viene settato
+  31          il flag TI0.
+  32          Per la ricezione bisogna settare REN0(SCON0.4) ad 1. Finisce quando riceve
+  33          il bit di stop, quest'ultimo a seconda che SM20 sia settato ad 1 o a 0 deve
+  34          essere 1 o 0*/
+  35          
+  36          void scelta(void){
+  37   1        //controllo lo status
+  38   1        switch(status){
+  39   2          case(0):
+  40   2            //trasmetto il messaggio di benvenuto
+  41   2            i++;
+  42   2            if (i<lenght_da_trasmettere){
+  43   3              SBUF0=*(puntatore+i);
   44   3            }
-  45   2            break;
-  46   2          case(1):
-  47   2            //ricevo
-  48   2            //leggo SBUF0
-  49   2            
-  50   2            key=SBUF0;
-  51   2            RI0=0;
-  52   2            if(key=='#'){
-  53   3              i=0;
-  54   3              status++;
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/25/2019 14:10:31 PAGE 2   
+  45   2            else{
+  46   3              //vado a ricevere
+  47   3              status++;
+  48   3              i=0;
+  49   3              REN0=1;
+  50   3            }
+  51   2            break;
+  52   2          case(1):
+  53   2            //ricevo
+  54   2            //leggo SBUF0
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/25/2019 16:51:48 PAGE 2   
 
-  55   3              *puntatore=msg_ricevuto[0];
-  56   3            }
-  57   2            else{
-  58   3              if(!loaded){
-  59   4                loaded=1;
-  60   4                SBUF0=key;
-  61   4              }
-  62   3            }
-  63   2            break;
-  64   2            
-  65   2          case(2):
-  66   2            //aggiungo il carattere a puntatore
-  67   2            RI0=0;
-  68   2            if(i<10){
-  69   3              key=SBUF0;
-  70   3              msg_ricevuto[i]=key;
-  71   3              i++;
-  72   3              if(key=='#'){
-  73   4                //smetto di ricevere
-  74   4                REN0=0;
-  75   4                status=0;
-  76   4                puntatore=msg_ricevuto;
-  77   4                lenght_da_trasmettere=i-1;
-  78   4                i=0;
-  79   4                SBUF0=*puntatore;
-  80   4              }
-  81   3            }
-  82   2            else{
-  83   3              REN0=0;
-  84   3              i=0;
-  85   3              status=0;
-  86   3              puntatore=msg_errore;
-  87   3              lenght_da_trasmettere=lenght_errore;
-  88   3              SBUF0=*puntatore;
-  89   3            }
-  90   2            break;
-  91   2        }
-  92   1      }
-  93          
-  94          void UARTO() interrupt 4{
-  95   1      
-  96   1        if(TI0==1){
-  97   2          //allora ho appena finito di trasmettere
-  98   2          scelta();
-  99   2          loaded=0;
- 100   2          //resettare flag
- 101   2          TI0=0;
- 102   2          return;
- 103   2        }
- 104   1        else if(RI0==1){
- 105   2          //allora ho appena finito di ricevere
- 106   2          scelta();
+  55   2            key=SBUF0;
+  56   2            RI0=0;
+  57   2            if(key=='#'){
+  58   3              i=0;
+  59   3              status++;
+  60   3              *puntatore=msg_ricevuto[0];
+  61   3            }
+  62   2            else{
+  63   3              if(!loaded){
+  64   4                loaded=1;
+  65   4                SBUF0=key;
+  66   4              }
+  67   3            }
+  68   2            break;
+  69   2            
+  70   2          case(2):
+  71   2            RI0=0;
+  72   2            if(i<ML){
+  73   3              key=SBUF0;
+  74   3              //aggiungo il carattere letto al vettore
+  75   3              msg_ricevuto[i]=key;
+  76   3              i++;
+  77   3              if(key=='#'){
+  78   4                //smetto di ricevere
+  79   4                REN0=0;
+  80   4                status=0;
+  81   4                puntatore=msg_ricevuto;
+  82   4                lenght_da_trasmettere=i-1;
+  83   4                i=0;
+  84   4                //trasmetto il messaggio ricevuto
+  85   4                SBUF0=*puntatore;
+  86   4              }
+  87   3            }
+  88   2            else{
+  89   3              REN0=0;
+  90   3              i=0;
+  91   3              status=0;
+  92   3              //trasmetto il messaggio di errore
+  93   3              puntatore=msg_errore;
+  94   3              lenght_da_trasmettere=lenght_errore;
+  95   3              SBUF0=*puntatore;
+  96   3            }
+  97   2            break;
+  98   2        }
+  99   1      }
+ 100          
+ 101          void UARTO() interrupt 4{
+ 102   1      
+ 103   1        if(TI0==1){
+ 104   2          //allora ho appena finito di trasmettere
+ 105   2          scelta();
+ 106   2          loaded=0;
  107   2          //resettare flag
- 108   2          return;
- 109   2        }
- 110   1        else{
- 111   2          //ho un problema
- 112   2          return;
- 113   2        }
- 114   1      }
- 115          
- 116          /*trasmettere benvenuto da micro, e poi aspetta in modalità eco*/
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/25/2019 14:10:31 PAGE 3   
+ 108   2          TI0=0;
+ 109   2          return;
+ 110   2        }
+ 111   1        else if(RI0==1){
+ 112   2          //allora ho appena finito di ricevere
+ 113   2          scelta();
+ 114   2          return;
+ 115   2        }
+ 116   1        else{
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/25/2019 16:51:48 PAGE 3   
 
- 117          void main(){
- 118   1        SP=(char)&stack;
- 119   1        Init_Device();
- 120   1        //inizio con la trasmissione del messaggio di benvenuto
- 121   1        puntatore = msg_da_trasmettere; 
- 122   1        SBUF0=*puntatore;
- 123   1        while(1);
- 124   1      }
+ 117   2          //ho un problema
+ 118   2          return;
+ 119   2        }
+ 120   1      }
+ 121          
+ 122          /*trasmettere benvenuto da micro, e poi aspetta in modalità eco*/
+ 123          void main(){
+ 124   1        SP=(char)&stack;
+ 125   1        Init_Device();
+ 126   1        //inizio con la trasmissione del messaggio di benvenuto
+ 127   1        puntatore = msg_da_trasmettere; 
+ 128   1        SBUF0=*puntatore;
+ 129   1        while(1);
+ 130   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
@@ -143,7 +149,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     10    ----
+   DATA SIZE        =      9    ----
    IDATA SIZE       =     58    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

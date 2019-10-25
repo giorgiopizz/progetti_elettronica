@@ -1,7 +1,11 @@
 #include "c8051F020.h"
 #define CR 13
 #define LF 10
-
+#define ML 10
+//ML è Max Lenght
+/*il programma ha 3 sezioni, divise dallo switch in scelta. Nella prima il micro trasmette un messaggio
+di benvenuto, nella seconda trasmetto i caratteri ricevuto, uno alla volta, nella terza memorizza
+10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalità all'altra si usa il #*/
 typedef unsigned char uchar;
 extern void Init_Device();
 idata stack[16];
@@ -13,13 +17,15 @@ uchar idata msg_da_trasmettere[]={'C','i','a','o',CR,LF};
 uchar lenght_da_trasmettere = 6;
 uchar idata msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
 uchar lenght_errore=10;
-uchar lenght_max = 10;
+//uchar lenght_max = 10;
 
 uchar i=0;
 uchar * puntatore;
-uchar idata msg_ricevuto[10];
+uchar idata msg_ricevuto[ML];
 uchar status=0;
 uchar loaded=0;
+
+
 /*la trasmissione inizia quando un byte viene scritto nel SBUF0
 viene lanciato un interrupt quando è finita la trasmissione e viene settato
 il flag TI0.
@@ -46,7 +52,6 @@ void scelta(void){
 		case(1):
 			//ricevo
 			//leggo SBUF0
-			
 			key=SBUF0;
 			RI0=0;
 			if(key=='#'){
@@ -63,10 +68,10 @@ void scelta(void){
 			break;
 			
 		case(2):
-			//aggiungo il carattere a puntatore
 			RI0=0;
-			if(i<10){
+			if(i<ML){
 				key=SBUF0;
+				//aggiungo il carattere letto al vettore
 				msg_ricevuto[i]=key;
 				i++;
 				if(key=='#'){
@@ -76,6 +81,7 @@ void scelta(void){
 					puntatore=msg_ricevuto;
 					lenght_da_trasmettere=i-1;
 					i=0;
+					//trasmetto il messaggio ricevuto
 					SBUF0=*puntatore;
 				}
 			}
@@ -83,6 +89,7 @@ void scelta(void){
 				REN0=0;
 				i=0;
 				status=0;
+				//trasmetto il messaggio di errore
 				puntatore=msg_errore;
 				lenght_da_trasmettere=lenght_errore;
 				SBUF0=*puntatore;
@@ -104,7 +111,6 @@ void UARTO() interrupt 4{
 	else if(RI0==1){
 		//allora ho appena finito di ricevere
 		scelta();
-		//resettare flag
 		return;
 	}
 	else{
