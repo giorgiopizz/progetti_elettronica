@@ -2,6 +2,7 @@
 #define CR 13
 #define LF 10
 #define ML 10
+#define n_loops 5
 //ML è Max Lenght
 /*il programma ha 3 sezioni, divise dallo switch in scelta. Nella prima il micro trasmette un messaggio
 di benvenuto, nella seconda trasmetto i caratteri ricevuto, uno alla volta, nella terza memorizza
@@ -21,10 +22,17 @@ uchar lenght_errore=10;
 
 uchar i=0;
 uchar * puntatore;
-uchar idata msg_ricevuto[ML];
+uchar idata msg_ricevuto[ML+4];
 uchar status=0;
 uchar loaded=0;
 
+//variabili led
+/*
+int luminosity = 0;
+int loops_on;
+int loops; //lo stato iniziale è 1
+int led_status=0;
+int lum_status=0;*/
 
 /*la trasmissione inizia quando un byte viene scritto nel SBUF0
 viene lanciato un interrupt quando è finita la trasmissione e viene settato
@@ -55,9 +63,9 @@ void scelta(void){
 			key=SBUF0;
 			RI0=0;
 			if(key=='#'){
-				i=0;
+				i=2;
 				status++;
-				*puntatore=msg_ricevuto[0];
+				//*puntatore=msg_ricevuto[0];
 			}
 			else{
 				if(!loaded){
@@ -69,7 +77,7 @@ void scelta(void){
 			
 		case(2):
 			RI0=0;
-			if(i<ML){
+			if(i<ML+3){
 				key=SBUF0;
 				//aggiungo il carattere letto al vettore
 				msg_ricevuto[i]=key;
@@ -79,7 +87,9 @@ void scelta(void){
 					REN0=0;
 					status=0;
 					puntatore=msg_ricevuto;
-					lenght_da_trasmettere=i-1;
+					msg_ricevuto[i-1]=CR;
+					msg_ricevuto[i]=LF;
+					lenght_da_trasmettere=i+1;
 					i=0;
 					//trasmetto il messaggio ricevuto
 					SBUF0=*puntatore;
@@ -119,12 +129,68 @@ void UARTO() interrupt 4{
 	}
 }
 
+//aggiungo le funzionalità del led
+/*
+void interruzione_timer(void) interrupt 1{
+	//fermo
+	TR0=0;
+	TF0=0;
+	loops--;
+	if (loops<=0){
+			if(led_status){
+				//accendo
+				P1_6=1;
+				led_status=0;
+				loops=loops_on;
+			}
+			else{
+				//spengo
+				P1_6=0;
+				led_status=1;
+				loops=n_loops-loops_on;
+				//faccio ripartire
+			}
+	}
+	TR0=1;
+}
+void interruzione_pulsante(void) interrupt 19{
+	TR0=0;
+	TF0=0;
+	//lum status  può essere 0, 1, 2,3,4
+	if(lum_status<4){
+		lum_status++;
+	}
+	else{
+		lum_status=0;
+	}
+	luminosity=lum_status*25;
+	loops_on=n_loops*luminosity/100;
+	//resetto tutto
+	loops=loops_on;
+	led_status=0;
+	P1_6=1;
+	
+//	se volessi resettare il flag dell'interrupt esterna 7
+//	dovrei scrivere
+	P3IF &= ~0x80;
+//	è necessario rimettere a 1 il flag della porta P3.7
+//	anche se probabilmente schiacciando il bottone verrà
+//	in automatico settato a 1 dopo
+	//P3_7=0;
+	//poi può rincominciare
+	TR0=1;
+}*/
 /*trasmettere benvenuto da micro, e poi aspetta in modalità eco*/
 void main(){
 	SP=(char)&stack;
 	Init_Device();
+	/*loops_on=n_loops*luminosity/100;
+	loops=loops_on;*/
 	//inizio con la trasmissione del messaggio di benvenuto
 	puntatore = msg_da_trasmettere; 
 	SBUF0=*puntatore;
+	msg_ricevuto[0]=CR;
+	msg_ricevuto[1]=LF;
+	
 	while(1);
 }

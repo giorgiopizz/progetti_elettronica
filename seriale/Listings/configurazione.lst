@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     1
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   00A5          +1    55     P1MDOUT  DATA  0A5H   ; PORT 1 OUTPUT MODE CONFIGURATION
   00A6          +1    56     P2MDOUT  DATA  0A6H   ; PORT 2 OUTPUT MODE CONFIGURATION
   00A7          +1    57     P3MDOUT  DATA  0A7H   ; PORT 3 OUTPUT MODE CONFIGURATION
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     2
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     2
 
   00A8          +1    58     IE       DATA  0A8H   ; INTERRUPT ENABLE
   00A9          +1    59     SADDR0   DATA  0A9H   ; SERIAL PORT 0 SLAVE ADDRESS
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00EB          +1   121     PCA0CPL1 DATA  0EBH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 1 - LOW BYTE
   00EC          +1   122     PCA0CPL2 DATA  0ECH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 2 - LOW BYTE
   00ED          +1   123     PCA0CPL3 DATA  0EDH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 3 - LOW BYTE
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     3
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     3
 
   00EE          +1   124     PCA0CPL4 DATA  0EEH   ; CAPTURE/COMPARE REGISTER FOR PCA 0 MODULE 4 - LOW BYTE
   00EF          +1   125     RSTSRC   DATA  0EFH   ; RESET SOURCE 
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00C3          +1   187     SI       BIT   SMB0CN.3 ; SMBUS 0 INTERRUPT PENDING FLAG
   00C4          +1   188     STO      BIT   SMB0CN.4 ; SMBUS 0 STOP FLAG
   00C5          +1   189     STA      BIT   SMB0CN.5 ; SMBUS 0 START FLAG
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     4
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     4
 
   00C6          +1   190     ENSMB    BIT   SMB0CN.6 ; SMBUS 0 ENABLE 
                 +1   191     ;
@@ -268,93 +268,95 @@ LOC  OBJ            LINE     SOURCE
 0006 22              252         ret
                      253     
 0007                 254     Timer_Init:
-0007 758E38          255         mov  CKCON,     #038h
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     5
+0007 758E30          255         mov  CKCON,     #030h
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     5
 
-000A 758DB8          256         mov  TH1,       #0B8h
-000D 75C834          257         mov  T2CON,     #034h
-0010 75CAB8          258         mov  RCAP2L,    #0B8h
-0013 75CBFF          259         mov  RCAP2H,    #0FFh
-0016 22              260         ret
-                     261     
-0017                 262     UART_Init:
-0017 759850          263         mov  SCON0,     #050h
-001A 22              264         ret
-                     265     
-001B                 266     Port_IO_Init:
-                     267         ; P0.0  -  TX0 (UART0), Open-Drain, Digital
-                     268         ; P0.1  -  RX0 (UART0), Open-Drain, Digital
-                     269         ; P0.2  -  Unassigned,  Open-Drain, Digital
-                     270         ; P0.3  -  Unassigned,  Open-Drain, Digital
-                     271         ; P0.4  -  Unassigned,  Open-Drain, Digital
-                     272         ; P0.5  -  Unassigned,  Open-Drain, Digital
-                     273         ; P0.6  -  Unassigned,  Open-Drain, Digital
-                     274         ; P0.7  -  Unassigned,  Open-Drain, Digital
-                     275     
-                     276         ; P1.0  -  Unassigned,  Open-Drain, Digital
-                     277         ; P1.1  -  Unassigned,  Open-Drain, Digital
-                     278         ; P1.2  -  Unassigned,  Open-Drain, Digital
-                     279         ; P1.3  -  Unassigned,  Open-Drain, Digital
-                     280         ; P1.4  -  Unassigned,  Open-Drain, Digital
-                     281         ; P1.5  -  Unassigned,  Open-Drain, Digital
-                     282         ; P1.6  -  Unassigned,  Push-Pull,  Digital
-                     283         ; P1.7  -  Unassigned,  Open-Drain, Digital
-                     284     
-                     285         ; P2.0  -  Unassigned,  Open-Drain, Digital
-                     286         ; P2.1  -  Unassigned,  Open-Drain, Digital
-                     287         ; P2.2  -  Unassigned,  Open-Drain, Digital
-                     288         ; P2.3  -  Unassigned,  Open-Drain, Digital
-                     289         ; P2.4  -  Unassigned,  Open-Drain, Digital
-                     290         ; P2.5  -  Unassigned,  Open-Drain, Digital
-                     291         ; P2.6  -  Unassigned,  Open-Drain, Digital
-                     292         ; P2.7  -  Unassigned,  Open-Drain, Digital
-                     293     
-                     294         ; P3.0  -  Unassigned,  Open-Drain, Digital
-                     295         ; P3.1  -  Unassigned,  Open-Drain, Digital
-                     296         ; P3.2  -  Unassigned,  Open-Drain, Digital
-                     297         ; P3.3  -  Unassigned,  Open-Drain, Digital
-                     298         ; P3.4  -  Unassigned,  Open-Drain, Digital
-                     299         ; P3.5  -  Unassigned,  Open-Drain, Digital
-                     300         ; P3.6  -  Unassigned,  Open-Drain, Digital
-                     301         ; P3.7  -  Unassigned,  Open-Drain, Digital
-                     302     
-001B 75A540          303         mov  P1MDOUT,   #040h
-001E 75E104          304         mov  XBR0,      #004h
-0021 75E340          305         mov  XBR2,      #040h
-0024 22              306         ret
-                     307     
-0025                 308     Oscillator_Init:
-0025 75B167          309         mov  OSCXCN,    #067h
-0028 781E            310         mov  R0,        #030        ; Wait 1ms for initialization
-002A                 311     Osc_Wait1:
-002A E4              312         clr  A
-002B D5E0FD          313         djnz ACC,       $
-002E D8FA            314         djnz R0,        Osc_Wait1
-0030                 315     Osc_Wait2:
-0030 E5B1            316         mov  A,         OSCXCN
-0032 30E7FB          317         jnb  ACC.7,     Osc_Wait2
-0035 75B208          318         mov  OSCICN,    #008h
-0038 22              319         ret
-                     320     
-0039                 321     Interrupts_Init:
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     6
+000A 758810          256         mov  TCON,      #010h
+000D 758DB8          257         mov  TH1,       #0B8h
+0010 75C834          258         mov  T2CON,     #034h
+0013 75CAB8          259         mov  RCAP2L,    #0B8h
+0016 75CBFF          260         mov  RCAP2H,    #0FFh
+0019 22              261         ret
+                     262     
+001A                 263     UART_Init:
+001A 759850          264         mov  SCON0,     #050h
+001D 22              265         ret
+                     266     
+001E                 267     Port_IO_Init:
+                     268         ; P0.0  -  TX0 (UART0), Open-Drain, Digital
+                     269         ; P0.1  -  RX0 (UART0), Open-Drain, Digital
+                     270         ; P0.2  -  Unassigned,  Open-Drain, Digital
+                     271         ; P0.3  -  Unassigned,  Open-Drain, Digital
+                     272         ; P0.4  -  Unassigned,  Open-Drain, Digital
+                     273         ; P0.5  -  Unassigned,  Open-Drain, Digital
+                     274         ; P0.6  -  Unassigned,  Open-Drain, Digital
+                     275         ; P0.7  -  Unassigned,  Open-Drain, Digital
+                     276     
+                     277         ; P1.0  -  Unassigned,  Open-Drain, Digital
+                     278         ; P1.1  -  Unassigned,  Open-Drain, Digital
+                     279         ; P1.2  -  Unassigned,  Open-Drain, Digital
+                     280         ; P1.3  -  Unassigned,  Open-Drain, Digital
+                     281         ; P1.4  -  Unassigned,  Open-Drain, Digital
+                     282         ; P1.5  -  Unassigned,  Open-Drain, Digital
+                     283         ; P1.6  -  Unassigned,  Push-Pull,  Digital
+                     284         ; P1.7  -  Unassigned,  Open-Drain, Digital
+                     285     
+                     286         ; P2.0  -  Unassigned,  Open-Drain, Digital
+                     287         ; P2.1  -  Unassigned,  Open-Drain, Digital
+                     288         ; P2.2  -  Unassigned,  Open-Drain, Digital
+                     289         ; P2.3  -  Unassigned,  Open-Drain, Digital
+                     290         ; P2.4  -  Unassigned,  Open-Drain, Digital
+                     291         ; P2.5  -  Unassigned,  Open-Drain, Digital
+                     292         ; P2.6  -  Unassigned,  Open-Drain, Digital
+                     293         ; P2.7  -  Unassigned,  Open-Drain, Digital
+                     294     
+                     295         ; P3.0  -  Unassigned,  Open-Drain, Digital
+                     296         ; P3.1  -  Unassigned,  Open-Drain, Digital
+                     297         ; P3.2  -  Unassigned,  Open-Drain, Digital
+                     298         ; P3.3  -  Unassigned,  Open-Drain, Digital
+                     299         ; P3.4  -  Unassigned,  Open-Drain, Digital
+                     300         ; P3.5  -  Unassigned,  Open-Drain, Digital
+                     301         ; P3.6  -  Unassigned,  Open-Drain, Digital
+                     302         ; P3.7  -  Unassigned,  Open-Drain, Digital
+                     303     
+001E 75A540          304         mov  P1MDOUT,   #040h
+0021 75E104          305         mov  XBR0,      #004h
+0024 75E340          306         mov  XBR2,      #040h
+0027 22              307         ret
+                     308     
+0028                 309     Oscillator_Init:
+0028 75B167          310         mov  OSCXCN,    #067h
+002B 781E            311         mov  R0,        #030        ; Wait 1ms for initialization
+002D                 312     Osc_Wait1:
+002D E4              313         clr  A
+002E D5E0FD          314         djnz ACC,       $
+0031 D8FA            315         djnz R0,        Osc_Wait1
+0033                 316     Osc_Wait2:
+0033 E5B1            317         mov  A,         OSCXCN
+0035 30E7FB          318         jnb  ACC.7,     Osc_Wait2
+0038 75B208          319         mov  OSCICN,    #008h
+003B 22              320         ret
+                     321     
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     6
 
-0039 75A890          322         mov  IE,        #090h
-003C 22              323         ret
-                     324     
-                     325     ; Initialization function for device,
-                     326     ; Call Init_Device from your main program
-003D                 327     Init_Device:
-003D 120000   F      328         lcall Reset_Sources_Init
-0040 120000   F      329         lcall Timer_Init
-0043 120000   F      330         lcall UART_Init
-0046 120000   F      331         lcall Port_IO_Init
-0049 120000   F      332         lcall Oscillator_Init
-004C 120000   F      333         lcall Interrupts_Init
-004F 22              334         ret
-                     335     
-                     336     end
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     7
+003C                 322     Interrupts_Init:
+003C 75A892          323         mov  IE,        #092h
+003F 75E720          324         mov  EIE2,      #020h
+0042 22              325         ret
+                     326     
+                     327     ; Initialization function for device,
+                     328     ; Call Init_Device from your main program
+0043                 329     Init_Device:
+0043 120000   F      330         lcall Reset_Sources_Init
+0046 120000   F      331         lcall Timer_Init
+0049 120000   F      332         lcall UART_Init
+004C 120000   F      333         lcall Port_IO_Init
+004F 120000   F      334         lcall Oscillator_Init
+0052 120000   F      335         lcall Interrupts_Init
+0055 22              336         ret
+                     337     
+                     338     end
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     7
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -422,7 +424,7 @@ ES . . . . . . . .  B ADDR   00A8H.4 A
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
 ET1. . . . . . . .  B ADDR   00A8H.3 A   
 ET2. . . . . . . .  B ADDR   00A8H.5 A   
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     8
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     8
 
 EX0. . . . . . . .  B ADDR   00A8H.0 A   
 EX1. . . . . . . .  B ADDR   00A8H.2 A   
@@ -435,19 +437,19 @@ FLSCL. . . . . . .  D ADDR   00B6H   A
 IE . . . . . . . .  D ADDR   00A8H   A   
 IE0. . . . . . . .  B ADDR   0088H.1 A   
 IE1. . . . . . . .  B ADDR   0088H.3 A   
-INIT . . . . . . .  C SEG    0050H       REL=UNIT
-INIT_DEVICE. . . .  C ADDR   003DH   R   SEG=INIT
-INTERRUPTS_INIT. .  C ADDR   0039H   R   SEG=INIT
+INIT . . . . . . .  C SEG    0056H       REL=UNIT
+INIT_DEVICE. . . .  C ADDR   0043H   R   SEG=INIT
+INTERRUPTS_INIT. .  C ADDR   003CH   R   SEG=INIT
 IP . . . . . . . .  D ADDR   00B8H   A   
 IT0. . . . . . . .  B ADDR   0088H.0 A   
 IT1. . . . . . . .  B ADDR   0088H.2 A   
 MODF . . . . . . .  B ADDR   00F8H.5 A   
 MSTEN. . . . . . .  B ADDR   00F8H.1 A   
 OSCICN . . . . . .  D ADDR   00B2H   A   
-OSCILLATOR_INIT. .  C ADDR   0025H   R   SEG=INIT
+OSCILLATOR_INIT. .  C ADDR   0028H   R   SEG=INIT
 OSCXCN . . . . . .  D ADDR   00B1H   A   
-OSC_WAIT1. . . . .  C ADDR   002AH   R   SEG=INIT
-OSC_WAIT2. . . . .  C ADDR   0030H   R   SEG=INIT
+OSC_WAIT1. . . . .  C ADDR   002DH   R   SEG=INIT
+OSC_WAIT2. . . . .  C ADDR   0033H   R   SEG=INIT
 OV . . . . . . . .  B ADDR   00D0H.2 A   
 P. . . . . . . . .  B ADDR   00D0H.0 A   
 P0 . . . . . . . .  D ADDR   0080H   A   
@@ -485,12 +487,12 @@ PCA0H. . . . . . .  D ADDR   00F9H   A
 PCA0L. . . . . . .  D ADDR   00E9H   A   
 PCA0MD . . . . . .  D ADDR   00D9H   A   
 PCON . . . . . . .  D ADDR   0087H   A   
-PORT_IO_INIT . . .  C ADDR   001BH   R   SEG=INIT
+PORT_IO_INIT . . .  C ADDR   001EH   R   SEG=INIT
 PS . . . . . . . .  B ADDR   00B8H.4 A   
 PSCTL. . . . . . .  D ADDR   008FH   A   
 PSW. . . . . . . .  D ADDR   00D0H   A   
 PT0. . . . . . . .  B ADDR   00B8H.1 A   
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE     9
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE     9
 
 PT1. . . . . . . .  B ADDR   00B8H.3 A   
 PT2. . . . . . . .  B ADDR   00B8H.5 A   
@@ -558,7 +560,7 @@ TL1. . . . . . . .  D ADDR   008BH   A
 TL2. . . . . . . .  D ADDR   00CCH   A   
 TL4. . . . . . . .  D ADDR   00F4H   A   
 TMOD . . . . . . .  D ADDR   0089H   A   
-A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/25/2019 16:51:49 PAGE    10
+A51 MACRO ASSEMBLER  CONFIGURAZIONE                                                       10/28/2019 10:18:04 PAGE    10
 
 TMR3CN . . . . . .  D ADDR   0091H   A   
 TMR3H. . . . . . .  D ADDR   0095H   A   
@@ -569,7 +571,7 @@ TR0. . . . . . . .  B ADDR   0088H.4 A
 TR1. . . . . . . .  B ADDR   0088H.6 A   
 TR2. . . . . . . .  B ADDR   00C8H.2 A   
 TXBSY. . . . . . .  B ADDR   00F8H.3 A   
-UART_INIT. . . . .  C ADDR   0017H   R   SEG=INIT
+UART_INIT. . . . .  C ADDR   001AH   R   SEG=INIT
 WCOL . . . . . . .  B ADDR   00F8H.6 A   
 WDTCN. . . . . . .  D ADDR   00FFH   A   
 XBR0 . . . . . . .  D ADDR   00E1H   A   

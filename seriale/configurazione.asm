@@ -17,7 +17,8 @@ Reset_Sources_Init:
     ret
 
 Timer_Init:
-    mov  CKCON,     #038h
+    mov  CKCON,     #030h
+    mov  TCON,      #010h
     mov  TH1,       #0B8h
     mov  T2CON,     #034h
     mov  RCAP2L,    #0B8h
@@ -84,7 +85,8 @@ Osc_Wait2:
     ret
 
 Interrupts_Init:
-    mov  IE,        #090h
+    mov  IE,        #092h
+    mov  EIE2,      #020h
     ret
 
 ; Initialization function for device,
