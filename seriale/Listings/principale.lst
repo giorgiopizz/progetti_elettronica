@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/28/2019 10:18:04 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE
@@ -62,7 +62,7 @@ line level    source
   52   3            }
   53   2            else{
   54   3              //vado a ricevere
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/28/2019 10:18:04 PAGE 2   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 2   
 
   55   3              status++;
   56   3              i=0;
@@ -126,7 +126,7 @@ line level    source
  114   2          //allora ho appena finito di trasmettere
  115   2          scelta();
  116   2          loaded=0;
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/28/2019 10:18:04 PAGE 3   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 3   
 
  117   2          //resettare flag
  118   2          TI0=0;
@@ -190,7 +190,7 @@ line level    source
  176          //  è necessario rimettere a 1 il flag della porta P3.7
  177          //  anche se probabilmente schiacciando il bottone verrà
  178          //  in automatico settato a 1 dopo
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/28/2019 10:18:04 PAGE 4   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 4   
 
  179            //P3_7=0;
  180            //poi può rincominciare

@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>0</UseSimulator>
+            <UseSimulator>1</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>1</UseTarget>
+            <UseTarget>0</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -385,6 +385,16 @@
               <FileName>configurazione.asm</FileName>
               <FileType>2</FileType>
               <FilePath>.\configurazione.asm</FilePath>
+            </File>
+            <File>
+              <FileName>ASSEMBLY.A51</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\ASSEMBLY.A51</FilePath>
+            </File>
+            <File>
+              <FileName>principale_misto_asm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\principale_misto_asm.c</FilePath>
             </File>
           </Files>
         </Group>
