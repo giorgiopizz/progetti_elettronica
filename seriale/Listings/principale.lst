@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        11/04/2019 10:26:50 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE
@@ -13,10 +13,10 @@ line level    source
    3          #define LF 10
    4          #define ML 10
    5          #define n_loops 5
-   6          //ML è Max Lenght
+   6          //ML ? Max Lenght
    7          /*il programma ha 3 sezioni, divise dallo switch in scelta. Nella prima il micro trasmette un messaggio
    8          di benvenuto, nella seconda trasmetto i caratteri ricevuto, uno alla volta, nella terza memorizza
-   9          10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalità all'altra si usa il #*/
+   9          10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalit? all'altra si usa il #*/
   10          typedef unsigned char uchar;
   11          extern void Init_Device();
   12          idata stack[16];
@@ -40,12 +40,12 @@ line level    source
   30          /*
   31          int luminosity = 0;
   32          int loops_on;
-  33          int loops; //lo stato iniziale è 1
+  33          int loops; //lo stato iniziale ? 1
   34          int led_status=0;
   35          int lum_status=0;*/
   36          
   37          /*la trasmissione inizia quando un byte viene scritto nel SBUF0
-  38          viene lanciato un interrupt quando è finita la trasmissione e viene settato
+  38          viene lanciato un interrupt quando ? finita la trasmissione e viene settato
   39          il flag TI0.
   40          Per la ricezione bisogna settare REN0(SCON0.4) ad 1. Finisce quando riceve
   41          il bit di stop, quest'ultimo a seconda che SM20 sia settato ad 1 o a 0 deve
@@ -62,7 +62,7 @@ line level    source
   52   3            }
   53   2            else{
   54   3              //vado a ricevere
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 2   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        11/04/2019 10:26:50 PAGE 2   
 
   55   3              status++;
   56   3              i=0;
@@ -126,7 +126,7 @@ line level    source
  114   2          //allora ho appena finito di trasmettere
  115   2          scelta();
  116   2          loaded=0;
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 3   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        11/04/2019 10:26:50 PAGE 3   
 
  117   2          //resettare flag
  118   2          TI0=0;
@@ -143,7 +143,7 @@ line level    source
  129   2        }
  130   1      }
  131          
- 132          //aggiungo le funzionalità del led
+ 132          //aggiungo le funzionalit? del led
  133          /*
  134          void interruzione_timer(void) interrupt 1{
  135            //fermo
@@ -170,7 +170,7 @@ line level    source
  156          void interruzione_pulsante(void) interrupt 19{
  157            TR0=0;
  158            TF0=0;
- 159            //lum status  può essere 0, 1, 2,3,4
+ 159            //lum status  pu? essere 0, 1, 2,3,4
  160            if(lum_status<4){
  161              lum_status++;
  162            }
@@ -187,16 +187,16 @@ line level    source
  173          //  se volessi resettare il flag dell'interrupt esterna 7
  174          //  dovrei scrivere
  175            P3IF &= ~0x80;
- 176          //  è necessario rimettere a 1 il flag della porta P3.7
- 177          //  anche se probabilmente schiacciando il bottone verrà
+ 176          //  ? necessario rimettere a 1 il flag della porta P3.7
+ 177          //  anche se probabilmente schiacciando il bottone verr?
  178          //  in automatico settato a 1 dopo
-C51 COMPILER V9.59.0.0   PRINCIPALE                                                        10/30/2019 12:23:55 PAGE 4   
+C51 COMPILER V9.59.0.0   PRINCIPALE                                                        11/04/2019 10:26:50 PAGE 4   
 
  179            //P3_7=0;
- 180            //poi può rincominciare
+ 180            //poi pu? rincominciare
  181            TR0=1;
  182          }*/
- 183          /*trasmettere benvenuto da micro, e poi aspetta in modalità eco*/
+ 183          /*trasmettere benvenuto da micro, e poi aspetta in modalit? eco*/
  184          void main(){
  185   1        SP=(char)&stack;
  186   1        Init_Device();

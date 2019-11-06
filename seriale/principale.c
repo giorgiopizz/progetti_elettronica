@@ -3,10 +3,10 @@
 #define LF 10
 #define ML 10
 #define n_loops 5
-//ML è Max Lenght
+//ML ? Max Lenght
 /*il programma ha 3 sezioni, divise dallo switch in scelta. Nella prima il micro trasmette un messaggio
 di benvenuto, nella seconda trasmetto i caratteri ricevuto, uno alla volta, nella terza memorizza
-10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalità all'altra si usa il #*/
+10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalit? all'altra si usa il #*/
 typedef unsigned char uchar;
 extern void Init_Device();
 idata stack[16];
@@ -30,12 +30,12 @@ uchar loaded=0;
 /*
 int luminosity = 0;
 int loops_on;
-int loops; //lo stato iniziale è 1
+int loops; //lo stato iniziale ? 1
 int led_status=0;
 int lum_status=0;*/
 
 /*la trasmissione inizia quando un byte viene scritto nel SBUF0
-viene lanciato un interrupt quando è finita la trasmissione e viene settato
+viene lanciato un interrupt quando ? finita la trasmissione e viene settato
 il flag TI0.
 Per la ricezione bisogna settare REN0(SCON0.4) ad 1. Finisce quando riceve
 il bit di stop, quest'ultimo a seconda che SM20 sia settato ad 1 o a 0 deve
@@ -129,7 +129,7 @@ void UARTO() interrupt 4{
 	}
 }
 
-//aggiungo le funzionalità del led
+//aggiungo le funzionalit? del led
 /*
 void interruzione_timer(void) interrupt 1{
 	//fermo
@@ -156,7 +156,7 @@ void interruzione_timer(void) interrupt 1{
 void interruzione_pulsante(void) interrupt 19{
 	TR0=0;
 	TF0=0;
-	//lum status  può essere 0, 1, 2,3,4
+	//lum status  pu? essere 0, 1, 2,3,4
 	if(lum_status<4){
 		lum_status++;
 	}
@@ -173,14 +173,14 @@ void interruzione_pulsante(void) interrupt 19{
 //	se volessi resettare il flag dell'interrupt esterna 7
 //	dovrei scrivere
 	P3IF &= ~0x80;
-//	è necessario rimettere a 1 il flag della porta P3.7
-//	anche se probabilmente schiacciando il bottone verrà
+//	? necessario rimettere a 1 il flag della porta P3.7
+//	anche se probabilmente schiacciando il bottone verr?
 //	in automatico settato a 1 dopo
 	//P3_7=0;
-	//poi può rincominciare
+	//poi pu? rincominciare
 	TR0=1;
 }*/
-/*trasmettere benvenuto da micro, e poi aspetta in modalità eco*/
+/*trasmettere benvenuto da micro, e poi aspetta in modalit? eco*/
 void main(){
 	SP=(char)&stack;
 	Init_Device();
