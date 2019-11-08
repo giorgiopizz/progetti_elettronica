@@ -22,6 +22,7 @@
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
+#include "file_condiviso.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -35,6 +36,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+	unsigned char * puntatore;
+	unsigned char msg_ricevuto[ML+4];
+	int lenght_da_trasmettere=6;
+	unsigned char messaggio_benvenuto[]={'C','i','a','o',CR,LF};
+	unsigned char msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
+	int lenght_errore=10;
+	int status = 0;
+	int loaded =0;
+	int i=0;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -90,13 +100,21 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-	unsigned char carattere='c';
+	//unsigned char carattere='c';
+	//reset del interrupt control register al bit trasmission completed 
 	USART2->ICR |= USART_ICR_TCCF;
-	USART2->CR1|=USART_CR1_TCIE;
-	//TCIE
-	USART2->CR1|=USART_CR1_UE;
-	USART2->CR1|=USART_CR1_TE;
-	USART2->TDR=carattere;
+	//abilito l'interrupt per la trasmissione
+	USART2->CR1 |= USART_CR1_TCIE;
+	//abilito l'interrupt per la ricezione
+	USART2->CR1 |= USART_CR1_RXNEIE;
+	//inizio a trasmettere il messaggio di benvenuto
+	msg_ricevuto[0]=CR;
+	msg_ricevuto[1]=LF;
+	puntatore= messaggio_benvenuto;
+	USART2->TDR=*puntatore;
+	
+	
+	
 	//USART2->TDR=USAR
   /* USER CODE END 2 */
 

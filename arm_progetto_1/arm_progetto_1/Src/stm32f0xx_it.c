@@ -21,6 +21,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f0xx_it.h"
+#include "file_condiviso.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -37,7 +39,68 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+void scelta(){
+	unsigned char carattere;
+	//controllo se ho appena finito la trasmissione o la ricezione
+	switch(status){
+		case 0:
+			//inserisco nel buffer di trasmissione il carattere da trasmettere
+			i++;
+			if(i<lenght_da_trasmettere){
+				USART2->TDR=*(puntatore+i);
+			}
+			else{
+				status=1;
+				i=0;
+			}
+			break;
+		case 1:
+			//do
+				//inserisco nel buffer di trasmissione il carattere trovato nel buffer di ricezione
+				carattere = (char)USART2->RDR;
+				if(carattere=='#'){
+					i=2;
+					status=2;
+				}
+				else{
+				if(!loaded){
+					loaded=1;
+					USART2->TDR=carattere;
+				}
+			}
+			break;
+		case 2:
+			//do
+				
+				carattere=USART2->RDR;
+				if(i<ML+3){
+					//aggiungo il carattere letto al vettore
+					msg_ricevuto[i]=carattere;
+					i++;
+					if(carattere=='#'){
+						//smetto di ricevere
+						status=0;
+						puntatore=msg_ricevuto;
+						msg_ricevuto[i-1]=CR;
+						msg_ricevuto[i]=LF;
+						lenght_da_trasmettere=i+1;
+						i=0;
+						//trasmetto il messaggio ricevuto
+						USART2->TDR=*puntatore;
+					}
+				}
+				else{
+					status=0;
+					//trasmetto il messaggio di errore
+					puntatore=msg_errore;
+					lenght_da_trasmettere=lenght_errore;
+					i=0;
+					USART2->TDR=*puntatore;
+				}
+			
+			break;
+	}
+}
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -145,20 +208,24 @@ void SysTick_Handler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-	//
-	if ((USART2->ISR & USART_ISR_TC) == USART_ISR_TC)
-	{
-//		if (send == sizeof(unsigned char))
-//			{
-//					send=0;
-				USART2->ICR |= USART_ICR_TCCF; /* Clear transfer complete flag */
-//			}
-//		else
-//		{
-//					/* clear transfer complete flag and fill TDR with a new char */
-//					USART2->TDR = stringtosend[send++];
-//		}
+	if((USART2->ISR & USART_ISR_TC) == USART_ISR_TC){
+		//resetto il flag
+		USART2->ICR |= USART_ICR_TCCF;		/* Clear transfer complete flag */
+		//allora ho appena finito di trasmettere
+		scelta();
+		loaded=0;
+		//resettare il flag
+		
+		return;
 	}
+	else if((USART2->ISR & USART_ISR_RXNE) == USART_ISR_RXNE){
+		//allora ho appena finito di ricevere
+		scelta();
+		return;
+	}
+	
+	 
+
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */

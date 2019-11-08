@@ -31,3 +31,4 @@ arm_progetto_1\main.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h
 arm_progetto_1\main.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h
 arm_progetto_1\main.o: ../Inc/usart.h
 arm_progetto_1\main.o: ../Inc/gpio.h
+arm_progetto_1\main.o: ..\MDK-ARM\file_condiviso.h
