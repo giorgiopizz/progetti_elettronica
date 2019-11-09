@@ -29,7 +29,7 @@
 /* USER CODE BEGIN TD */
 int status=0;
 int loops_on=0;
-int n_loops=100;
+int n_loops=50;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -144,15 +144,7 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles EXTI line 4 to 15 interrupts.
   */
-void EXTI15_10_IRQHandler(void)
-{
-	int i;
-  if (EXTI->PR & (1<<13)) {                       // EXTI0 interrupt pending?
-    EXTI->PR |= (1<<13);                          // clear pending interrupt
-		i++;
-           // switch on  LED
-  }
-}
+
 void EXTI4_15_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */

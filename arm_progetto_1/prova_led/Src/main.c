@@ -89,14 +89,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   
-//	SYSCFG->EXTICR[1] &= (uint16_t)~SYSCFG_EXTICR4_EXTI13_PC; /* (2) */
-//	EXTI->IMR = 0x0001; /
-//	EXTI->RTSR = 0x0001;
-//	EXTI->FTSR = 0x0001; 
 
-	
-	
-	
   /* USER CODE END 2 */
 
   /* Infinite loop */
