@@ -67,7 +67,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int acceso=0;
-	int i=0;
   /* USER CODE END 1 */
   
 
@@ -97,28 +96,27 @@ int main(void)
 
 	
 	
-	while(1){
-		if(acceso){
-			//spengo
-			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
-			HAL_Delay(loops_on);
-		
-		}
-		else{
-			//accendo
-			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
-			HAL_Delay(n_loops-loops_on);
-		
-		}
-	}
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		if(acceso==0){
+			//accendo
+			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
+			HAL_Delay(loops_on);
+			acceso=1;
+		}
+		else{
+			//spengo
+			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
+			HAL_Delay(n_loops-loops_on);
+			acceso=0;
+		}
     /* USER CODE END WHILE */
-
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
