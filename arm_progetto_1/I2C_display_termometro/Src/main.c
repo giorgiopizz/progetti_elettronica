@@ -33,6 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define LCD_ADDRESS (0X3E<<1) //indirizzo lcd, ruotato a sx per lasciare bit di r/w
+#define LM76_ADDRESS (0X48<<1) //indirizzo termometro
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,6 +47,8 @@ ADC_HandleTypeDef hadc;
 
 I2C_HandleTypeDef hi2c1;
 
+TIM_HandleTypeDef htim7;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -54,6 +58,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -70,7 +75,9 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	uint8_t initdata[]={0x38,0x39,0x14,0x74,0x54,0x6F,0x0F,0x01};
+	int j=8;	
+	int NBYTES =(2<<16);
   /* USER CODE END 1 */
   
 
@@ -94,8 +101,48 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC_Init();
   MX_I2C1_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-
+	//abilitare interrupt
+	/*
+	I2C1->CR1|=I2C_CR1_RXIE;
+	I2C1->CR1|=I2C_CR1_TXIE;
+	I2C1->CR2|=I2C_CR2_AUTOEND;
+	I2C1->CR1|=I2C_CR1_STOPIE;
+	
+	I2C1->CR2|= NBYTES;
+	I2C1->CR2|= LCD_ADDRESS;
+	I2C1->CR2|=I2C_CR2_START;
+	//accendo interrupt timer
+	TIM7->DIER |= TIM_DIER_UIE; 
+	TIM7->CNT=0;
+	TIM7->SR=0;
+	TIM7->CR1|=TIM_CR1_CEN;
+	while(j<100){ //Facciamo aspettare 1/10 di secondo
+		while (TIM7->SR==0){}
+		TIM7->CNT=0;
+		TIM7->SR=0;
+		TIM7->CR1|=TIM_CR1_CEN;
+		j++;
+	}
+	TIM7->CR1&=~TIM_CR1_CEN;*/
+	//configurazione dell'adc
+	//prima bisogna disabilitarlo
+	ADC1->CR&=~ADC_CR_ADEN;
+	
+	ADC1->CR|=ADC_CR_ADCAL;
+	while((ADC1->CR & ADC_CR_ADCAL)==ADC_CR_ADCAL){}
+	if ((ADC1->ISR & ADC_ISR_ADRDY) != 0) /* (1) */
+	{
+		ADC1->ISR |= ADC_ISR_ADRDY; /* (2) */
+	}
+	
+	ADC1->CR|=ADC_CR_ADEN;
+	ADC1->IER|=ADC_IER_ADRDYIE;
+	ADC1->IER|=ADC_IER_EOCIE;
+	
+	
+	//inizializzazione del display
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -121,8 +168,10 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI14;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI14
+                              |RCC_OSCILLATORTYPE_HSI48;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.HSI14State = RCC_HSI14_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.HSI14CalibrationValue = 16;
@@ -135,11 +184,11 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI48;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -197,6 +246,13 @@ static void MX_ADC_Init(void)
   {
     Error_Handler();
   }
+  /** Configure for the selected ADC regular channel to be converted. 
+  */
+  sConfig.Channel = ADC_CHANNEL_VREFINT;
+  if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN ADC_Init 2 */
 
   /* USER CODE END ADC_Init 2 */
@@ -246,6 +302,44 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 0;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 48000;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 

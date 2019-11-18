@@ -1,0 +1,5 @@
+".\Objects\start.obj",
+".\Objects\start1.obj",
+".\Objects\configurazione.obj" 
+TO ".\Objects\seriale_asm" 
+PRINT(".\Listings\seriale_asm.m51") RAMSIZE(256) 

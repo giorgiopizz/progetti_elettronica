@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   PRINCIPALE_MISTO_ASM                                              11/04/2019 09:36:02 PAGE 1   
+C51 COMPILER V9.59.0.0   PRINCIPALE_MISTO_ASM                                              11/16/2019 17:20:17 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PRINCIPALE_MISTO_ASM
@@ -8,7 +8,7 @@ COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE principale_misto_asm.c OPTIMIZE(
 
 line level    source
 
-   1          /*#include "c8051F020.h"
+   1          #include "c8051F020.h"
    2          #define CR 13
    3          #define LF 10
    4          #define ML 10
@@ -18,98 +18,96 @@ line level    source
    8          //di benvenuto, nella seconda trasmetto i caratteri ricevuto, uno alla volta, nella terza memorizza
    9          //10 caratteri(al massimo) per poi trasmetterli. Per passare da una modalità all'altra si usa il #
   10          typedef unsigned char uchar;
-  11          //extern void Init_Device();
+  11          extern void Init_Device();
   12          extern void Start();
   13          extern void N();
   14          extern idata stack2;
-  15          //idata stack[16];
-  16          
-  17          //dico che non mi interessa la comunicazione multiprocessore
-  18          uchar key;
-  19          
-  20          uchar idata msg_da_trasmettere[]={'C','i','a','o',CR,LF};
-  21          uchar lenght_da_trasmettere = 6;
-  22          uchar idata msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
-  23          uchar lenght_errore=10;
-  24          //uchar lenght_max = 10;
-  25          
-  26          uchar i=0;
-  27          uchar * puntatore;
-  28          uchar idata msg_ricevuto[ML+4];
-  29          uchar status=0;
-  30          uchar loaded=0;
+  15          idata stack[16];
+  16          uchar key;
+  17          
+  18          uchar idata msg_da_trasmettere[]={'C','i','a','o',CR,LF};
+  19          uchar lenght_da_trasmettere = 6;
+  20          uchar idata msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
+  21          uchar lenght_errore=10;
+  22          uchar lenght_max = 10;
+  23          
+  24          uchar i=0;
+  25          uchar * puntatore;
+  26          uchar idata msg_ricevuto[ML+4];
+  27          uchar status=0;
+  28          uchar loaded=0;
+  29          
+  30          
   31          
   32          
-  33          
-  34          
-  35          void scelta(void){
-  36            //controllo lo status
-  37            //trasmetto il messaggio di benvenuto
-  38            i++;
-  39            if (i<lenght_da_trasmettere){
-  40              ACC=i;
-  41              N();
-  42              *puntatore =(uchar) ACC;
-  43              SBUF0=*puntatore;
-  44            }
-  45            else{
-  46              //vado a ricevere
-  47              status++;
-  48              i=0;
-  49              REN0=1;
-  50            }
-  51              
-  52          }
-  53          
-  54          void UARTO() interrupt 4{
-C51 COMPILER V9.59.0.0   PRINCIPALE_MISTO_ASM                                              11/04/2019 09:36:02 PAGE 2   
+  33          void scelta(void){
+  34   1        //controllo lo status
+  35   1        //trasmetto il messaggio di benvenuto
+  36   1        i++;
+  37   1        if (i<lenght_da_trasmettere){
+  38   2          ACC=i;
+  39   2          N();
+  40   2          *puntatore =(uchar) ACC;
+  41   2          SBUF0=*puntatore;
+  42   2        }
+  43   1        else{
+  44   2          //vado a ricevere
+  45   2          status++;
+  46   2          i=0;
+  47   2          REN0=1;
+  48   2        }
+  49   1          
+  50   1      }
+  51          
+  52          void UARTO() interrupt 4{
+  53   1      
+  54   1        if(TI0==1){
+C51 COMPILER V9.59.0.0   PRINCIPALE_MISTO_ASM                                              11/16/2019 17:20:17 PAGE 2   
 
-  55          
-  56            if(TI0==1){
-  57              //allora ho appena finito di trasmettere
-  58              scelta();
-  59              loaded=0;
-  60              //resettare flag
-  61              TI0=0;
-  62              return;
-  63            }
-  64            else if(RI0==1){
-  65              //allora ho appena finito di ricevere
-  66              scelta();
-  67              return;
-  68            }
-  69            else{
-  70              //ho un problema
-  71              return;
-  72            }
-  73          }
-  74          
-  75          
-  76          trasmettere benvenuto da micro, e poi aspetta in modalità eco
-  77          void main(){
-  78            SP=(uchar)&stack2;
-  79            //Init_Device();
-  80            Start();
-  81            
-  82            loops_on=n_loops*luminosity/100;
-  83            loops=loops_on;
-  84            //inizio con la trasmissione del messaggio di benvenuto
-  85            ACC=i;
-  86            N();
-  87            *puntatore =(uchar) ACC;
-  88            //puntatore =datapointer; 
-  89            SBUF0=*puntatore;
-  90            while(1);
-  91          }*/
+  55   2          //allora ho appena finito di trasmettere
+  56   2          scelta();
+  57   2          loaded=0;
+  58   2          //resettare flag
+  59   2          TI0=0;
+  60   2          return;
+  61   2        }
+  62   1        else if(RI0==1){
+  63   2          //allora ho appena finito di ricevere
+  64   2          scelta();
+  65   2          return;
+  66   2        }
+  67   1        else{
+  68   2          //ho un problema
+  69   2          return;
+  70   2        }
+  71   1      }
+  72          
+  73          
+  74          //trasmettere benvenuto da micro, e poi aspetta in modalità eco
+  75          void main(){
+  76   1        SP=(uchar)&stack2;
+  77   1        //Init_Device();
+  78   1        Start();
+  79   1      //  
+  80   1      //  loops_on=n_loops*luminosity/100;
+  81   1      //  loops=loops_on;
+  82   1        //inizio con la trasmissione del messaggio di benvenuto
+  83   1        ACC=i;
+  84   1        N();
+  85   1        *puntatore =(uchar) ACC;
+  86   1        //puntatore =datapointer; 
+  87   1        SBUF0=*puntatore;
+  88   1        while(1);
+  89   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   ----    ----
+   CODE SIZE        =    151    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
-   IDATA SIZE       =   ----    ----
+   DATA SIZE        =     10    ----
+   IDATA SIZE       =     62    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 

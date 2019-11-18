@@ -13,13 +13,10 @@ idata stack[16];
 
 //dico che non mi interessa la comunicazione multiprocessore
 uchar key;
-
 uchar idata msg_da_trasmettere[]={'C','i','a','o',CR,LF};
 uchar lenght_da_trasmettere = 6;
 uchar idata msg_errore[]={CR,LF,'E','r','r','o','r','e',CR,LF};
 uchar lenght_errore=10;
-//uchar lenght_max = 10;
-
 uchar i=0;
 uchar * puntatore;
 uchar idata msg_ricevuto[ML+4];
@@ -35,7 +32,7 @@ int led_status=0;
 int lum_status=0;*/
 
 /*la trasmissione inizia quando un byte viene scritto nel SBUF0
-viene lanciato un interrupt quando ? finita la trasmissione e viene settato
+viene lanciato un interrupt quando e finita la trasmissione e viene settato
 il flag TI0.
 Per la ricezione bisogna settare REN0(SCON0.4) ad 1. Finisce quando riceve
 il bit di stop, quest'ultimo a seconda che SM20 sia settato ad 1 o a 0 deve
@@ -109,17 +106,17 @@ void scelta(void){
 }
 
 void UARTO() interrupt 4{
-
 	if(TI0==1){
-		//allora ho appena finito di trasmettere
+		//ho appena finito di trasmettere
 		scelta();
-		loaded=0;
+		//dice che ha caricato l'ultimo carattere
+		loaded=0; 
 		//resettare flag
 		TI0=0;
 		return;
 	}
 	else if(RI0==1){
-		//allora ho appena finito di ricevere
+		//ho appena finito di ricevere
 		scelta();
 		return;
 	}
@@ -129,7 +126,7 @@ void UARTO() interrupt 4{
 	}
 }
 
-//aggiungo le funzionalit? del led
+//aggiungo le funzionalita del led
 /*
 void interruzione_timer(void) interrupt 1{
 	//fermo

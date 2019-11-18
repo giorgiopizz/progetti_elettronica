@@ -30,6 +30,7 @@ void interruzione_timer(void) interrupt 1{
 				loops=loops_on;
 			}
 			else{
+	
 				//spengo
 				P1_6=0;
 				led_status=1;
@@ -56,15 +57,9 @@ void interruzione_pulsante(void) interrupt 19{
 	led_status=0;
 	P1_6=1;
 	
-	/*se volessi resettare il flag dell'interrupt esterna 7
-	dovrei scrivere*/
+	//reset del flag dell'interrupt esterna 7
 	P3IF &= ~0x80;
-	/*è necessario rimettere a 1 il flag della porta P3.7
-	anche se probabilmente schiacciando il bottone verrà
-	in automatico settato a 1 dopo*/
-	//P3_7=0;
-	//poi può rincominciare
-	TR0=1;
+	TR0=1;//faccio rpartire il timer
 }
 void main(){
 	SP = (char) (&stack1);

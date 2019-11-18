@@ -25,11 +25,20 @@
 /* USER CODE BEGIN Includes */
 extern int loops_on;
 extern int n_loops;
+extern int acceso;
+extern int wait;
+extern int loops;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+void wait_tim(){
+	wait=1;
+	TIM7->CNT=0;
+	TIM7->SR=0;
+	TIM7->CR1|=TIM_CR1_CEN;
+	while(wait){}
+}
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -42,6 +51,7 @@ extern int n_loops;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN PV */
 
@@ -50,6 +60,7 @@ extern int n_loops;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -66,7 +77,7 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	int acceso=0;
+	acceso=0;
   /* USER CODE END 1 */
   
 
@@ -88,28 +99,42 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  
-
+  MX_TIM7_Init();
+  /* USER CODE BEGIN 2 */
+	//attivo l'interrupt per il timer
+	//loops=10;
+	TIM7->DIER|=TIM_DIER_UIE;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	/*
+	int i=0;
+	while(i<100){
+		while(TIM7->SR==0){}
+		i++;
+	}*/
   while (1)
   {
 		if(acceso==0){
 			//accendo
 			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
-			HAL_Delay(loops_on);
+			//HAL_Delay(loops_on);
+			//devo aspettare loops_on cicli
+			loops=loops_on;
+			wait_tim();
 			acceso=1;
 		}
 		else{
 			//spengo
 			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
-			HAL_Delay(n_loops-loops_on);
+			//HAL_Delay(n_loops-loops_on);
+			loops=n_loops-loops_on;
+			wait_tim();
 			acceso=0;
 		}
     /* USER CODE END WHILE */
-		
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -146,6 +171,44 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 1;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 10000;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
+
 }
 
 /**

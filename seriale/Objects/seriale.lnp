@@ -1,4 +1,6 @@
 ".\Objects\principale.obj",
-".\Objects\configurazione.obj" 
+".\Objects\configurazione.obj",
+".\Objects\principale_misto_asm.obj",
+".\Objects\ASSEMBLY.obj" 
 TO ".\Objects\seriale" 
 PRINT(".\Listings\seriale.m51") RAMSIZE(256) 

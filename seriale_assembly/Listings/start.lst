@@ -1,0 +1,57 @@
+A51 MACRO ASSEMBLER  START                                                                11/16/2019 16:41:17 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\start.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE start.A51 NOMOD51 SET(SMALL) DEBUG PRINT(.\Listings\start.lst) OBJECT(.
+                      \Objects\start.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;$include (C8051f020.inc)
+                       2     
+                       3     ;extrn Init_Device()
+                       4     ;codice segment code
+                       5     
+                       6     
+                       7     ;cseg at 0x023A
+                       8     ;       jmp interruzione
+                       9     
+                      10     ;rseg vettore:
+                      11     ;       DS messaggio_benvenuto 10H
+                      12     ;rseg codice
+                      13     ;creazione_vettore:
+                      14     ;;mov R0, #messaggio_benvenuto
+                      15     ;mov R0,#'C'
+                      16     ;ret
+                      17     
+                      18     ;interruzione:
+                      19     ;       jb R0, ricezione
+                      20     ;       jb T0, trasmissione
+                      21     
+                      22     ;ricezione:
+                      23     ;       clr R0
+                      24     ;       reti
+                      25     ;trasmissione:
+                      26     ;       clr T0
+                      27     ;       reti
+                      28     ;       
+                      29     ;jmp $
+                      30     ;end
+                      31     ;       
+                      32     ;       
+*** WARNING #A41 IN 32 (start.A51, LINE 32): MISSING 'END' STATEMENT
+A51 MACRO ASSEMBLER  START                                                                11/16/2019 16:41:17 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  1 WARNING(S), 0 ERROR(S)

@@ -214,8 +214,6 @@ void USART2_IRQHandler(void)
 		//allora ho appena finito di trasmettere
 		scelta();
 		loaded=0;
-		//resettare il flag
-		
 		return;
 	}
 	else if((USART2->ISR & USART_ISR_RXNE) == USART_ISR_RXNE){

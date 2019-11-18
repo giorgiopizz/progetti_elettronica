@@ -27,7 +27,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-
+	extern int j;
+	extern uint8_t initdata[16];
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -56,7 +57,9 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern ADC_HandleTypeDef hadc;
+extern I2C_HandleTypeDef hi2c1;
+extern TIM_HandleTypeDef htim7;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -138,6 +141,85 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f0xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles ADC and COMP interrupts (COMP interrupts through EXTI lines 21 and 22).
+  */
+void ADC1_COMP_IRQHandler(void)
+{
+  /* USER CODE BEGIN ADC1_COMP_IRQn 0 */
+	volatile uint16_t m;
+	volatile int resto,m_1,m_pc,m_sc,m_tc;
+	
+  /* USER CODE END ADC1_COMP_IRQn 0 */
+  HAL_ADC_IRQHandler(&hadc);
+  /* USER CODE BEGIN ADC1_COMP_IRQn 1 */
+	//controllo se ha finito di convertire
+	if((ADC1->ISR & ADC_ISR_ADRDY)!=0){
+		//faccio partire la conversione
+		ADC1->ISR|=ADC_ISR_ADRDY;
+		ADC1->CR|=ADC_CR_ADSTART;
+	}
+	if((ADC1->CR & ADC_ISR_EOC) == ADC_ISR_EOC){
+		//leggo dal registro ADC_DR
+		m=ADC1->DR;
+		m_1=12412; //è 1241.2, ricordarsi di dividere sempre per 10
+		m_pc=(int)(m*10/m_1); //m prima cifra
+		resto=(m*10)%m_1;//resto
+		m_sc=(int)(resto*10/m_1);//m seconda cifra
+		resto=(resto*10)%m_1;//resto
+		m_tc=(int)(resto*10/m_1);//m terza cifra
+		ADC1->IER&=~ADC_IER_EOCIE;
+	}
+	else{
+		ADC1->CR|=ADC_CR_ADSTART;
+	}
+  /* USER CODE END ADC1_COMP_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM7 global interrupt.
+  */
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+
+  /* USER CODE END TIM7_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim7);
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+	
+  /* USER CODE END TIM7_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 event global interrupt / I2C1 wake-up interrupt through EXTI line 23.
+  */
+void I2C1_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_IRQn 0 */
+
+  /* USER CODE END I2C1_IRQn 0 */
+  if (hi2c1.Instance->ISR & (I2C_FLAG_BERR | I2C_FLAG_ARLO | I2C_FLAG_OVR)) {
+    HAL_I2C_ER_IRQHandler(&hi2c1);
+  } else {
+    HAL_I2C_EV_IRQHandler(&hi2c1);
+  }
+  /* USER CODE BEGIN I2C1_IRQn 1 */
+	/*if (I2C1->ISR & I2C_ISR_STOPF){ //Se la flag dello stop-bit è alta...
+ TIM7->CNT=0; //Metto contatore a zero
+ TIM7->SR=0; //Metto a zero la flag dello stop del timer
+ while (TIM7->SR==0){} //Faccio aspettare per avere almeno 1ms tra una istruzione e l'altra
+if(j<16){
+ I2C1->CR2 |= I2C_CR2_START; //Faccio partire lo START
+ I2C1->ICR |= I2C_ICR_STOPCF; //Pulisco la flag dello stop-bit
+ }
+}
+if (j<16){
+ I2C1->TXDR = initdata[j]; //Mando il vettore di inizializzazione un elemento per volta
+	j++;
+}*/
+  /* USER CODE END I2C1_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 

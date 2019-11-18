@@ -30,6 +30,9 @@
 int status=0;
 int loops_on=0;
 int n_loops=50;
+int acceso;
+int wait;
+volatile int loops=0;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -58,7 +61,7 @@ int n_loops=50;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern TIM_HandleTypeDef htim7;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -144,7 +147,6 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles EXTI line 4 to 15 interrupts.
   */
-
 void EXTI4_15_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */
@@ -158,7 +160,35 @@ void EXTI4_15_IRQHandler(void)
 		status=0;
 	}
 	loops_on=n_loops*status*25/100;
+	//resetto
+	wait=0;
+	acceso=0;
   /* USER CODE END EXTI4_15_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM7 global interrupt.
+  */
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+	//devo aspettare i loops
+	
+  /* USER CODE END TIM7_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim7);
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+	
+	if(loops>0){
+		loops-=1;
+		TIM7->CR1|=TIM_CR1_CEN;
+		//TIM7->EGR=1;
+		
+	}
+	else{
+		wait=0;
+		TIM7->CR1&=~TIM_CR1_CEN;
+	}
+  /* USER CODE END TIM7_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

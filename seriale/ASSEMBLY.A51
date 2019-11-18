@@ -18,11 +18,11 @@
 
 ;RSEG NEXT
 ;N:	MOVC A,@A+DPTR
-	;RET
+;	RET
 ;RSEG CODICE
 ;START:
-	;LCALL Init_Device
-	;MOV DPTR, #VETT
-	;RET
-	
+;	LCALL Init_Device
+;	MOV DPTR, #VETT
+;	RET
+;	
 ;END

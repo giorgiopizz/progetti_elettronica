@@ -26,3 +26,5 @@ prova_led\stm32f0xx_hal_pwr_ex.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_
 prova_led\stm32f0xx_hal_pwr_ex.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_i2c_ex.h
 prova_led\stm32f0xx_hal_pwr_ex.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_pwr.h
 prova_led\stm32f0xx_hal_pwr_ex.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_pwr_ex.h
+prova_led\stm32f0xx_hal_pwr_ex.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim.h
+prova_led\stm32f0xx_hal_pwr_ex.o: ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h
