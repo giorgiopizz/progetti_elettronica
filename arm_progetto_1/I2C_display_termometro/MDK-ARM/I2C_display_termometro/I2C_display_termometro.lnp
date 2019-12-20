@@ -20,6 +20,8 @@
 "i2c_display_termometro\stm32f0xx_hal_exti.o"
 "i2c_display_termometro\stm32f0xx_hal_tim.o"
 "i2c_display_termometro\stm32f0xx_hal_tim_ex.o"
+"i2c_display_termometro\stm32f0xx_hal_uart.o"
+"i2c_display_termometro\stm32f0xx_hal_uart_ex.o"
 "i2c_display_termometro\system_stm32f0xx.o"
 --library_type=microlib --strict --scatter "I2C_display_termometro\I2C_display_termometro.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

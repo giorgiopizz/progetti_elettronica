@@ -23,12 +23,40 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+extern int vec[3];
+extern int wait;
+extern int loops;
+extern void led();
+char * puntatore;
+char msg[]={'P','o','t',':','.','.','.','.','.','%'};
+int i=0;
+int loaded=0;
+int lenght_da_trasmettere;
+//uint8_t initdata[]={0x38,0x39,0x14,0x74,0x54,0x6F,0x0F,0x01};
+char initdata[]={0x00,0x38,0x00,0x39,0x00,0x14,0x00,0x74,0x00,0x54,0x00,0x6F,0x00,0x0F,0x00,0x01};
+//int j=8;	
+int NBYTES =(2<<16);
+extern int j;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+/*
+Descrizione del programma I2C display termometro. 
+L'obiettivo di questo programma è scrivere su un display la temperatura registrata dal termometro e 
+il potenziale registrato da una manopolo letta dall'adc.
+è necessario dividere il programma in più parti:
+-prima
+*/
+void wait_tim(){
+	led();
+	wait=1;
+	TIM7->CNT=0;
+	TIM7->SR=0;
+	TIM7->CR1|=TIM_CR1_CEN;
+	while(wait){}
+	led();
+}
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -49,6 +77,8 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim7;
 
+UART_HandleTypeDef huart2;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -59,6 +89,7 @@ static void MX_GPIO_Init(void);
 static void MX_ADC_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM7_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -75,9 +106,7 @@ static void MX_TIM7_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t initdata[]={0x38,0x39,0x14,0x74,0x54,0x6F,0x0F,0x01};
-	int j=8;	
-	int NBYTES =(2<<16);
+
   /* USER CODE END 1 */
   
 
@@ -102,53 +131,91 @@ int main(void)
   MX_ADC_Init();
   MX_I2C1_Init();
   MX_TIM7_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-	//abilitare interrupt
-	/*
+
+	//abilito gli interrupt
+	//del timer
+	TIM7->SR=0;
+	TIM7->DIER|=TIM_DIER_UIE;
+	//e dell'adc
+	
+	ADC1->IER|=ADC_IER_ADRDYIE;
+	ADC1->IER|=ADC_IER_EOCIE;
+	
+	//abilito e configuro l'adc
+	//se fosse già abilitato lo disabilito per fare la calibrazione
+	if ((ADC1->CR & ADC_CR_ADEN) != 0)
+	{
+		ADC1->CR |= ADC_CR_ADDIS;
+	}
+	//aspetto che non sia piu enable
+	while ((ADC1->CR & ADC_CR_ADEN) != 0){}
+	//faccio la calibrazione
+	ADC1->CR|=ADC_CR_ADCAL;
+	//ed aspetto che abbia finito
+	while((ADC1->CR & ADC_CR_ADCAL)==ADC_CR_ADCAL){}
+	//se adrdy fosse 1 la metto a 0
+	if ((ADC1->ISR & ADC_ISR_ADRDY) != 0)
+	{
+		ADC1->ISR |= ADC_ISR_ADRDY;
+	}
+	//abilito
+	ADC1->CHSELR&=~ADC_CHSELR_CHSEL0;
+	ADC1->CR|=ADC_CR_ADEN;
+	//verra triggerato l'interrupt quando sarà pronto
+	
+	//adesso dovrebbe essere stato registrato il valore vrefint_data
+	//aspetto 1 millisecondo
+	loops=1;
+	wait_tim();
+	
+	//cambio il canale da cui leggere il dato nell'adc
+	ADC1->CHSELR&=~ADC_CHSELR_CHSEL17;
+	ADC1->CHSELR|=ADC_CHSELR_CHSEL0;
+	//faccio ripartire la lettura
+	ADC1->CR|=ADC_CR_ADSTART;
+	
+	//aspetto 10 millisecondi
+	loops=100;
+	wait_tim();
+	
+	//trasmetto con la USART
+	//reset del interrupt control register al bit trasmission completed 
+	/*USART2->ICR |= USART_ICR_TCCF;
+	//abilito l'interrupt per la trasmissione
+	USART2->CR1 |= USART_CR1_TCIE;
+	//abilito l'interrupt per la ricezione
+	USART2->CR1 |= USART_CR1_RXNEIE;*/
+	//inizio a trasmettere il messaggio
+
+	//USART2->TDR=*puntatore;
+	
+	loops=10;
+	wait_tim();
+	GPIOA->ODR |= GPIO_ODR_5;
+	loops=10;
+	wait_tim();
+
+	
+	//inizio a lavorare con 'i2c
 	I2C1->CR1|=I2C_CR1_RXIE;
 	I2C1->CR1|=I2C_CR1_TXIE;
 	I2C1->CR2|=I2C_CR2_AUTOEND;
 	I2C1->CR1|=I2C_CR1_STOPIE;
-	
-	I2C1->CR2|= NBYTES;
-	I2C1->CR2|= LCD_ADDRESS;
-	I2C1->CR2|=I2C_CR2_START;
-	//accendo interrupt timer
-	TIM7->DIER |= TIM_DIER_UIE; 
-	TIM7->CNT=0;
-	TIM7->SR=0;
-	TIM7->CR1|=TIM_CR1_CEN;
-	while(j<100){ //Facciamo aspettare 1/10 di secondo
-		while (TIM7->SR==0){}
-		TIM7->CNT=0;
-		TIM7->SR=0;
-		TIM7->CR1|=TIM_CR1_CEN;
-		j++;
-	}
-	TIM7->CR1&=~TIM_CR1_CEN;*/
-	//configurazione dell'adc
-	//prima bisogna disabilitarlo
-	ADC1->CR&=~ADC_CR_ADEN;
-	
-	ADC1->CR|=ADC_CR_ADCAL;
-	while((ADC1->CR & ADC_CR_ADCAL)==ADC_CR_ADCAL){}
-	if ((ADC1->ISR & ADC_ISR_ADRDY) != 0) /* (1) */
-	{
-		ADC1->ISR |= ADC_ISR_ADRDY; /* (2) */
-	}
-	
-	ADC1->CR|=ADC_CR_ADEN;
-	ADC1->IER|=ADC_IER_ADRDYIE;
-	ADC1->IER|=ADC_IER_EOCIE;
-	
-	
-	//inizializzazione del display
+
+
+	I2C1->CR2 |= NBYTES; //Setta il registro degli NBYTES al valore stabilito
+	I2C1->CR2 |= LCD_ADDRESS; //Dà l'indirizzo dello schermo al microcontrollore
+	I2C1->CR2 |= I2C_CR2_START; //Dà lo start-bit 
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -192,7 +259,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -340,6 +408,41 @@ static void MX_TIM7_Init(void)
   /* USER CODE BEGIN TIM7_Init 2 */
 
   /* USER CODE END TIM7_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 9600;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
 
 }
 
